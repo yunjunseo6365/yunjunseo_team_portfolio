@@ -28,7 +28,7 @@
 
 -- 프로젝트 인원 : 5명
 
-## 3nd_project
+## 3rd_project
 
 - 2차 My Own Chef를 전면 개조한 간편 요리 레시피 앱
 
