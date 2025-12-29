@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>광고 제안</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+  <style>
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 30px;
+    }
+
+    .ad-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .ad-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .ad-item:hover {
+      border-color: var(--accent);
+      background: rgba(29, 161, 242, 0.1);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .pagination button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .proposal {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .proposal input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .proposal button {
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      background: #38BDF8;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>광고 제안</h1>
+    <div class="ad-list" id="adList">
+      <!-- 기존 게시물 -->
+      <a href="./광고 제안 게시판3.html">
+        <div class="ad-item">광고 제안 예시 입니다</div>
+      </a>
+    </div>
+    
+    <!-- 페이지네이션 -->
+    <div class="pagination">
+        <button>&laquo;</button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button>&raquo;</button>
+      </div>
+
+    <!-- 제안하기 버튼 -->
+    <div class="proposal">
+      <input type="text" placeholder="검색 내용을 입력하세요">
+      <button id="proposalBtn">제안하기</button>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자 채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const adListElement = document.getElementById("adList");
+      // 검색창 요소를 가져옵니다.
+      const searchInput = document.querySelector('.proposal input[type="text"]');
+      const adList = JSON.parse(localStorage.getItem("adList")) || [];
+
+      adList.forEach((ad) => {
+        const item = document.createElement("div");
+        item.className = "ad-item";
+        item.innerHTML = `
+          <strong>${ad.amount}</strong> - ${ad.content}
+          <br><small>${ad.createdAt}</small>
+        `;
+
+        item.onclick = () => {
+          localStorage.setItem("selectedAd", JSON.stringify(ad));
+          window.location.href = "advertisement_detail.html";
+        };
+
+        adListElement.prepend(item);
+      });
+
+      // ▼▼▼▼▼▼▼▼▼▼ 검색 기능 구현 ▼▼▼▼▼▼▼▼▼▼
+      searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        // adListElement의 모든 자식 요소(기존 게시물 + 동적 추가 게시물)를 가져옵니다.
+        const items = adListElement.children;
+
+        // 모든 목록 항목을 순회하며 필터링합니다.
+        Array.from(items).forEach(item => {
+          const itemText = item.textContent.toLowerCase();
+          if (itemText.includes(searchTerm)) {
+            item.style.display = 'block'; // 검색어가 포함되면 보이게 합니다.
+          } else {
+            item.style.display = 'none';  // 포함되지 않으면 숨깁니다.
+          }
+        });
+      });
+      // ▲▲▲▲▲▲▲▲▲▲ 검색 기능 구현 ▲▲▲▲▲▲▲▲▲▲
+
+      // 제안하기 버튼 클릭 이벤트
+      document.getElementById("proposalBtn").addEventListener("click", function () {
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) {
+          alert("로그인이 필요한 기능입니다.");
+          return;
+        }
+        window.location.href = "./advertisement.html";
+      });
+    });
+
+    // --- 이하 기존 로그인/인증 관련 코드는 그대로 유지 ---
+
+    (function () {
+      const authArea = document.getElementById("authArea");
+      const profile = document.getElementById("profile");
+      const dropdown = document.getElementById("dropdown");
+
+      function logout() {
+        localStorage.removeItem("currentUser");
+        location.reload();
+      }
+      window.logout = logout;
+
+      if (profile && dropdown) {
+        profile.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+        window.addEventListener("click", (e) => {
+          if (!profile.contains(e.target)) dropdown.style.display = "none";
+        });
+      }
+
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser && authArea && profile) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
+      }
+    })();
+
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
+    ];
+
+    protectedLinks.forEach(link => {
+      if (!link) return;
+      link.addEventListener("click", (e) => {
+        const u = localStorage.getItem("currentUser");
+        if (!u) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          location.href = "login.html";
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

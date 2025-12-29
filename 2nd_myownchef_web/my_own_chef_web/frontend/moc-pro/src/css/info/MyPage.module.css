@@ -1,0 +1,250 @@
+/* 전체적인 레이아웃과 배경 */
+.myPageContainer {
+  display: flex;
+  gap: 30px;
+  padding: 40px;
+  background-color: #FAE7C3;
+  min-width: clamp(200px, 80vw, 2000px);
+  border-radius: 10px;
+  height: 100%;
+  width: clamp(100px, 60vw, 2000px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.leftPanel {
+  display: flex;
+  width: 40%;
+  gap: 20px;
+  border: 1px rgba(200, 92, 60, 0.6) solid;
+  border-radius: clamp(1px, 0.5vw, 30px);
+}
+
+.userProfileBox {
+  width: 100%;
+  background-color: #FAE7C3;
+  padding: 20px;
+  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightPanel {  
+  display: flex;
+  width: 55%;
+  gap: 20px;
+  flex-direction: column;
+  border: 1px rgba(200, 92, 60, 0.6) solid;
+  border-radius: clamp(1px, 0.5vw, 30px);
+}
+.userInfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.3vw, 30px);
+  padding: 10px 0;
+}
+
+.label {
+  font-weight: bold;
+  color: #555;
+  font-size: clamp(0.3rem, calc(1rem + 0.3vw), 2rem);
+}
+
+.nickname_value {
+  color: #333;
+  border: none;
+  background-color: #FAE7C3;
+  font-size: clamp(0.3rem, calc(1rem + 0.1vw), 2rem);
+  border-radius: clamp(1px, 0.8vw, 20px);
+  padding: clamp(2px, 0.5vw, 50px) 0;
+  width: 70%;
+}
+
+.email_value {
+  color: #333;
+  border: none;
+  background-color: #FAE7C3;
+  font-size: clamp(0.3rem, calc(1rem + 0.1vw), 2rem);
+  border-radius: clamp(1px, 0.8vw, 20px);
+  padding: clamp(2px, 0.5vw, 50px) 0 ;
+  width: 70%;
+}
+
+.active{
+  background-color: white;
+  border: 1px black solid;
+  padding: clamp(2px, 0.3vw, 50px) clamp(2px, 0.5vw, 50px) 0;
+}
+
+.valueWithButton {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 왼쪽 사용자 정보 */
+.userProfileBox { 
+  background-color: #FAE7C3; 
+  padding: 20px; 
+  border-radius: 8px; 
+}
+.profileImageContainer { 
+  width: clamp(30px, 13vw, 200px);
+  height: clamp(30px, 13vw, 200px);
+  margin-bottom: 20px;
+  display: flex;
+  gap: clamp(3px, 1vw, 60px);
+  flex-direction: column;
+  align-items: center;
+}
+.profileImage { 
+  width: 50%;
+  height: 50%;
+  object-fit: fill;
+  border-radius: 50%; 
+  border: 1px white solid;
+}
+.uploadButton { 
+  background-color: #e57373; 
+  color: white; 
+  border: none; 
+  padding: clamp(2px, 0.4vw, 20px) clamp(2px, 2vw, 50px); 
+  border-radius: clamp(1px, 0.8vw, 20px); 
+  cursor: pointer; 
+  display: block; 
+  font-size: clamp(0.3rem, calc(1rem + 0.1vw), 2rem);
+}
+
+.editButton { 
+  background-color: #e57373; 
+  padding: clamp(2px, 0.8vw, 50px) clamp(2px, 2vw, 50px); 
+  border-radius: 5px; 
+  cursor: pointer; 
+  color: white;
+  border: none;
+}
+
+
+
+
+/* 오른쪽 게시글 목록 */
+.postListBox { 
+  background-color: #FAE7C3; 
+  padding: 20px; 
+  border-radius: 8px;
+}
+.listTitle { 
+  margin-top: 0; 
+  font-size: clamp(0.3rem, calc(1rem + 0.4vw), 2rem);
+  font-weight: bold;
+  color: #555;
+  margin-bottom: clamp(2px, 0.8vw, 50px);
+}
+.postListItem { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: clamp(1px, 0.5vw, 50px);
+  border: 1px rgba(200, 92, 60, 0.6) solid;
+  margin-bottom: clamp(2px, 1vw, 50px);
+  align-items: center;
+  border-radius: clamp(1px, 0.5vw, 30px);
+  cursor: pointer;
+}
+.notificationItem { 
+  padding: 8px; 
+  background-color: #e3f2fd; 
+  border-radius: 4px; 
+  margin-bottom: 5px; 
+}
+
+.empty-list { 
+  color: #888; 
+  text-align: center; 
+  padding: 20px; }
+
+/* 회원탈퇴 버튼 */
+.withdrawButton { 
+  align-self: flex-end; 
+  background-color: #333; 
+  color: white; 
+  padding: 10px 20px; 
+  border: none; 
+  border-radius: 20px; 
+  font-weight: bold; 
+  cursor: pointer; 
+}
+
+/* 로딩 및 에러 */
+.loading-container, .error-container { 
+  text-align: center; 
+  padding: 50px; 
+  font-size: 1.2rem; 
+}
+.btndiv{
+  display: flex;
+  gap: clamp(3px, 2vw, 50px);
+  justify-content: right;
+  margin-top: clamp(2px, 2vw, 100px);
+}
+
+.cancelButton { 
+  background-color: #e57373; 
+  padding: clamp(2px, 0.8vw, 50px) clamp(2px, 2vw, 50px); 
+  border-radius: 5px; 
+  cursor: pointer; 
+  color: white;
+  border: none;
+  display: none;
+}
+
+.completeButton { 
+  background-color: #e57373; 
+  padding: clamp(2px, 0.8vw, 50px) clamp(2px, 2vw, 50px); 
+  border-radius: 5px; 
+  cursor: pointer; 
+  color: white;
+  border: none;
+  display: none;
+}
+
+.edit_deactive{
+  display: none;
+}
+
+.edit_active{
+  display: block;
+}
+.pagediv{
+  margin-top: clamp(2px, 2vw, 50px);
+  display: flex;
+  justify-content: center;
+}
+.user_out_div{
+  width: 100%;
+  justify-content: right;
+  display: flex;
+  padding: clamp(3px, 1vw, 30px);
+}
+.pagenation .pagenationdiv{
+    display: flex;
+    gap: 0px;
+    align-items: center;
+    font-size: 120%;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+    width: 100%;
+}
+.listLoading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 16px;
+    color: #666;
+}

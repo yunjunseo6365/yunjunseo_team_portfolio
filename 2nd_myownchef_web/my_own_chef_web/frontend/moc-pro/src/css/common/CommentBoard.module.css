@@ -1,0 +1,62 @@
+.comment_container{
+    margin-top: clamp(1px, 1vh, 50px);
+    border-top: 1px red solid;
+    padding: clamp(2px, 1.6vw, 40px) clamp(1px, 0.8vw, 20px);
+}
+.comment_input_container form{
+    display: flex;
+    gap: clamp(3px, 2vw, 40px);
+    width: 100%;
+}
+.comment_input_box{
+    background-color: #FAE7C3;
+    border: 1px #C85C3C solid;
+    border-radius: clamp(1px, 0.5vw, 20px);
+    width: clamp(10%, 65vw, 100%);
+    padding: clamp(1px, 0.8vw, 20px);
+    font-size: clamp(0.3rem, calc(1rem + 0.1vw),  2rem);
+    width: 85%;
+}
+.comment_submit_btn{
+    border: none;
+    font-size: clamp(0.3rem, calc(1rem + 0.5vw), 2rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(1px, 0.8vw, 20px) clamp(2px, 2.4vw, 40px);
+    color: white;
+    background-color: #C85C3C;
+    border-radius: clamp(1px, 0.5vw, 20px);
+    cursor: pointer;
+    width: 15%;
+}
+.comment_list_container{
+    padding: clamp(1px, 1vw, 30px);
+    font-size: clamp(0.3rem, calc(1rem + 0.2vw), 2rem);
+}
+.icon{
+    font-size: clamp(0.3rem, calc(1rem + 0.3vw), 2rem);
+}
+.comment_list_board{
+    padding: clamp(1px, 1vw, 15px);
+    position: relative;
+    border-bottom: 1px black solid;
+}
+.comment_user_div{
+    display: flex;
+    gap: clamp(1px, 0.3vw, 20px);
+}
+.comment_content_div{
+    padding: clamp(1px, 0.3vw, 15px) clamp(1px, 1.6vw, 30px);
+    display: flex;
+    flex-wrap: wrap;
+}
+.report_div{
+    display: flex;
+    gap: 0.3vw;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 2vh;
+    cursor: pointer;
+}

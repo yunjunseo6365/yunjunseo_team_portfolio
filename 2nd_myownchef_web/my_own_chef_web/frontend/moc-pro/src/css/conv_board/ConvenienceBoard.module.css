@@ -1,0 +1,185 @@
+.conv_board_container {
+    width: 90%; /* 너비를 조금 줄여 여백을 확보 */
+    padding: 30px;
+    margin: 20px auto; /* 위아래 여백 추가 */
+    background-color: #FEF7E9; /* 목표 이미지와 비슷한 배경색 */
+    border: 1px solid #E0C9A6; /* 테두리를 살짝 줍니다 */
+    border-radius: 15px;
+}
+.conv_board_container hr {
+    border: 0;
+    height: 1px;
+    background-color: #E0C9A6; /* 배경색과 어울리는 얇은 선 */
+    margin-bottom: 30px;
+}
+.conv_board_container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.store_filter_group {
+    display: flex; /* 자식 요소(버튼)들을 가로로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 버튼 사이의 간격 */
+    margin-bottom: 20px; /* 아래 카테고리 탭과의 간격 */
+}
+.store_logo{
+    width: 5vw;
+    height: 3vh;
+    object-fit: contain;
+    object-position: center;
+}
+.filter_button {
+    flex: 1;
+    padding: 10px 0;
+    border: 1px solid #D5A16F; /* 연한 테두리 */
+    border-radius: 20px;       /* 둥근 모서리 (pill 모양) */
+    background-color: transparent; /* 배경 없음 */
+    color: #333;               /* 기본 글자색 */
+    cursor: pointer;
+    font-size: 14px;
+}
+.active {
+    background-color: #D5A16F; /* 배경색 채우기 */
+    color: #fff;               /* 흰색 글자 */
+    border-color: #D5A16F;     /* 테두리 색도 동일하게 */
+    font-weight: bold;
+}
+.category_tab_group {
+    display: flex;
+    border-bottom: 1px solid #EADDC6; /* 탭 그룹 전체 밑줄 */
+}
+.tab_button {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 2px solid transparent; /* 밑줄을 위한 공간 확보 */
+    background-color: transparent;
+    color: #555;
+    cursor: pointer;
+    font-size: 16px;
+}
+.tab_button.active {
+    background-color: #D5A16F;
+    color: #fff;
+    font-weight: bold;
+    /* border-bottom: 2px solid #C85C3C;  <-- 또는 이런식으로 밑줄 강조도 가능 */
+}
+.tab_button:last-child {
+    border-right: none;
+}
+.card_list_container {
+  display: flex;
+  flex-direction: column; /* 아이템들을 세로로 정렬 */
+  gap: 20px; /* 아이템(카드) 사이의 간격을 20px로 설정 */
+  margin-top: 2vh;
+}
+
+.shopping_card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #EADDC6;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.card_content {
+  display: flex;
+  flex-direction: column; /* 내부 아이템들을 세로로 정렬 */
+  gap: 5px;
+  justify-content: center; /* 내부 아이템 간격 조절 */
+  flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
+}
+.card_text_row {
+  display: flex;
+  justify-content: space-between; /* ★★★ 아이템들을 양쪽 끝으로 밀어냅니다 */
+  align-items: baseline;          /* 텍스트의基線(baseline)을 기준으로 세로 정렬 */
+}
+.card_meta_info {
+    display: flex;
+    align-items: baseline;
+    gap: 12px; /* '작성자'와 '게시일' 사이의 간격을 원하는 만큼 조절 */
+}
+.card_img {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0; /* 카드가 작아져도 이미지 영역 크기는 유지 */
+  background-color: #f0f0f0; /* 이미지가 없을 때 회색 배경 표시 */
+  border-radius: 4px;
+}
+.card_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 영역에 맞게 채워지도록 설정 */
+}
+
+.card_btn {
+    margin-top: 10px; /* 위쪽 텍스트와의 간격 */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.card_title {font-size: 1.2rem; font-weight: bold; }
+.view_details_button { grid-area: details; }
+/* 구인중/완료 버튼은 status 영역에 배치 */
+.status_button_ing, .status_button_done { grid-area: status; }
+.card_button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+.view_details_button {
+    background-color: #D5A16F;
+}
+.status_button_ing {
+    background-color: #A9A9A9; /* 회색 계열 */
+}
+.status_button_done {
+    background-color: #8793FF; /* 파란색 계열 */
+}
+.bottom_container {
+    display: flex;
+    position: relative;
+    justify-content: flex-end; /* 양쪽 끝으로 정렬 */
+    align-items: center;
+    width: 90%;
+    margin: 20px auto;
+}
+
+.page_change_btn {
+    display: flex;
+    /* position을 이용한 중앙 정렬 */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.write_btn {
+    padding: 10px 20px;
+    color: white;
+    background-color: #C85C3C;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0; 
+}
+.write_btn:hover {
+    background-color: #b04a2c;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+}

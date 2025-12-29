@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.common.CommonMapper">
+    
+    <!-- ===== CommonCodeVO ResultMap ===== -->
+    <resultMap id="CommonCodeResultMap" type="com.moc.pro.common.vo.CommonCodeVO">
+        <result property="code" column="CODE"/>
+        <result property="masterCode" column="MASTER_CODE"/>
+        <result property="codeName" column="CODE_NAME"/>
+    </resultMap>
+    
+    <!-- ===== RegionVO ResultMap ===== -->
+    <resultMap id="RegionResultMap" type="com.moc.pro.common.vo.RegionVO">
+        <result property="cityCode" column="CITY_CODE"/>
+        <result property="masterCode" column="MASTER_CODE"/>
+        <result property="regionCode" column="REGION_CODE"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="cityName" column="CITY_NAME"/>
+    </resultMap>
+    
+    <!-- ===== 공통코드 쿼리 ===== -->
+    
+    <!-- 마스터코드로 공통코드 목록 조회 -->
+    <select id="selectByMasterCode" parameterType="string" resultMap="CommonCodeResultMap">
+        SELECT CODE, MASTER_CODE, CODE_NAME
+        FROM TB_COMMON
+        WHERE MASTER_CODE = #{masterCode}
+        ORDER BY CODE
+    </select>
+    
+    <!-- ===== 지역 쿼리 ===== -->
+    
+    <!-- 시/도 목록 조회 -->
+    <select id="selectProvinces" resultMap="RegionResultMap">
+        SELECT DISTINCT REGION_CODE, REGION_NAME
+        FROM TB_REGION
+        ORDER BY REGION_CODE
+    </select>
+    
+    <!-- 시/군/구 목록 조회 -->
+    <select id="selectCitiesByRegion" parameterType="string" resultMap="RegionResultMap">
+        SELECT CITY_CODE, CITY_NAME, REGION_CODE, REGION_NAME
+        FROM TB_REGION
+        WHERE REGION_CODE = #{regionCode}
+        ORDER BY CITY_CODE
+    </select>
+    
+</mapper>

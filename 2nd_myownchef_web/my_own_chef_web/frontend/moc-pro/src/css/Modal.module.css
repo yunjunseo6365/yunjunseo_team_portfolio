@@ -1,0 +1,127 @@
+/* 모달 오버레이는 모달 라이브러리가 제공하는 틀 */
+/* 이걸 반투명으로 해야 모달 창 외에 배경은 어둡고 반투명하게 처리돼여 */
+.modal_overlay {
+    position: fixed;
+    inset: 0; 
+    background-color: rgba(0, 0, 0, 0.75);
+    /* 내용물(베이지색 박스)을 중앙에 배치 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 다른 요소들보다 위에 보이도록 z-index를 높게 설정 */
+    z-index: 1000;
+}
+
+/* 아녀석이 반투명한 모달 오버레이 안에 저희가 쓸 팝업창 영역입니다 */
+.modal_container {
+    display: flex;
+    padding: 25px 40px;
+    flex-direction: column;
+    background-color: #FAE7C3;
+    border-radius: 20px;
+    padding: 0;
+    outline: none;
+}
+
+
+
+
+
+
+
+
+
+/* 모달_헤더 에는 제가 쓰던게 #555인데 이거 바꾸셔야 글씨 잘 보입니다 placeholder 같은 역할이에요 */
+.modal_title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: left;
+    margin: 0 0 10px 0;
+    padding: 10px;
+}
+.modal_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #555;
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+.close_button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 1;
+    padding: 10px;
+}
+.location_container {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+}
+.form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    padding: 10px;
+}
+.form_group label {
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding-left: 5px;
+    padding: 10px;
+}
+.form_group input,
+.form_group textarea {
+    padding: 12px;
+    border: 1px solid #D5A16F;
+    border-radius: 8px;
+    background-color: transparent;
+    font-size: 1rem;
+}
+
+
+
+
+/* ============================================================================================ */
+/* 여기서부터 버튼 컨테이너 (취소, 글 쓰기 등) 영역입니다 */
+.button_container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+}
+.modal_button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    padding: 10px;
+}
+.cancel_button {
+    background-color: #C85C3C;
+    color: white;
+    padding: 10px;
+}
+.cancel_button:hover {
+    background-color: #c5915f;
+}
+.submit_button {
+    background-color: #C85C3C;
+    color: white;
+    padding: 10px;
+}
+.submit_button:hover {
+    background-color: #b04a2c;
+}
+/* 여기까지가 취소/글 쓰기 버튼 */
+/* =========================================================================================== */

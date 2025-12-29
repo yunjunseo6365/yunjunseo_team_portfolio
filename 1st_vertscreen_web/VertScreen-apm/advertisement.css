@@ -1,0 +1,194 @@
+h2 {
+  margin: 0 20px;
+  text-align: center;
+}
+
+/* Info Box */
+#info-box {
+  display: none;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 40px 20px 0 20px;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-weight: 700;
+  color: var(--text);
+  transition: all .25s ease;
+  cursor: pointer;
+}
+
+#info-img {
+  width: 600px;
+  height: 400px;
+  object-fit: cover;
+  margin: 10px;
+  flex-shrink: 0;
+}
+
+#info-box .info-text-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#headcount {
+  width: 20%;
+  height: 25px;
+}
+
+/* Address Search */
+.address-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 30px auto;
+  max-width: 600px;
+}
+
+.address-search input {
+  flex: 1;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 2px solid var(--line, #ccc);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.address-search input:focus {
+  border-color: var(--accent, #00e5a8);
+  box-shadow: 0 0 8px rgba(0, 229, 168, 0.3);
+}
+
+.address-search button {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--accent, #00e5a8);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.address-search button:hover {
+  background: var(--accent-2, #00b48a);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 229, 168, 0.35);
+}
+
+.address-search button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 229, 168, 0.25);
+}
+
+/* Party Ad */
+.party-ad {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 20px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text);
+  transition: all .25s ease;
+  cursor: pointer;
+}
+
+#textTitle, #textInput {
+  width: 100%;
+  background-color: #dbeafe;
+  color: black;
+  border: none;
+  border-bottom: 2px solid #0000007e;
+  border-radius: 5px;
+  outline: none;
+  resize: none;
+  margin-top: 20px;
+}
+
+#textTitle {
+  height: 35px;
+  font-size: 18px;
+}
+
+#textInput {
+  height: 85%;
+  font-size: 16px;
+}
+
+#imagePreview {
+  width: 600px;
+  height: 600px;
+  margin-top: 20px;
+  margin-right: 20px;
+  border-radius: 5px;
+}
+
+#imageInput {
+  display: none;
+  border: none;
+}
+
+.custom-file-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--accent, #00e5a8);
+  color: #dbeafe;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.custom-file-button:hover {
+  background: var(--accent-2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+}
+
+.custom-file-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+}
+
+/* Party & Cancel Buttons */
+.pnc-btn {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  gap: 10px;               /* 버튼 간격 */
+  margin-top: 20px;
+}
+
+.make-party, .cancel {
+  background: var(--accent, #00e5a8);
+  margin: 15px;
+  width: 300px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #dbeafe;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block; /* 블록 -> inline-block */
+}
+
+.make-party:hover, .cancel:hover {
+  background: var(--accent-2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+}
+
+.make-party:active, .cancel:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+}

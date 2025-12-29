@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마커 클릭 정보 표시</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./advertisement.css">
+  <style>
+    /* 프로필 드롭다운 스타일 추가 */
+    .profile { position:relative; display:none; align-items:center; cursor:pointer; }
+    .avatar { width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; }
+    .dropdown { display:none; position:absolute; top:48px; right:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; min-width:140px; box-shadow: var(--shadow);}
+    .dropdown a, .dropdown button { display:block; width:100%; padding:12px; background:none; border:none; color:var(--text); text-align:left; cursor:pointer; font-size:14px; }
+    .dropdown a:hover, .dropdown button:hover { background:#22314b; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="vertscreen_advertlist.html">광고 종류</a>
+        <a href="vertscreen_brand.html">브랜드 가치</a>
+        <a href="party-board.html">파티 모집</a>
+        <a href="listTest.html">광고 제안</a>
+        <a href="review.html">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section id="naver-map-section">
+  <h2>광고를 희망하시는</h2>
+  <h2>주소를 입력해 주세요</h2>
+  <div id="map"></div>
+  </section>
+  <div class="address-search">
+  <input type="text" id="address" placeholder="주소를 입력하세요">
+  <button onclick="searchAddress()">확인</button>
+  </div>
+
+  <div>
+    <h2>광고 제안을 위한 이미지 업로드 및 내용</h2>
+    <div class="party-ad">
+      <div>
+        <img id="imagePreview" src="./no_image.png" alt=""><br><br>
+        <label for="imageInput" class="custom-file-button">이미지 선택</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <p style="color: red;">※ 이미지 파일은 광고 예시를 첨부해주세요.</p>
+      </div>
+      <div class="info-text-wrap">
+        <textarea id="textTitle" placeholder="금액을 입력하세요."></textarea>
+        <textarea id="textInput" placeholder="내용을 입력하세요."></textarea>
+      </div>
+    </div>
+    </div>
+    
+    <section class="pnc-btn">
+        <button class="make-party" onclick="signup()">제안 시작</button>
+        <a href="./listTest.html"><button class="cancel">취소</button></a>
+    </section>
+
+  <footer>
+    <div></div>
+    <div></div>
+  </footer>
+  <script>
+  // 주소 검색 → 좌표/마커 갱신
+  function searchAddress() {
+    const address = document.getElementById("address").value.trim();
+    if (!address) {
+      alert("주소를 입력해주세요.");
+      return;
+    }
+
+    // 주소가 입력되었을 때 alert
+    alert("주소가 확인되었습니다: " + address);
+  }
+
+  // 이미지 미리보기
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('imagePreview').src = e.target.result;
+    };
+    if (file) reader.readAsDataURL(file);
+  });
+
+  // '제안 시작' 버튼 기능
+  function signup(){
+    const amountValue = document.getElementById("textTitle").value.trim();
+    const contentValue = document.getElementById("textInput").value.trim();
+    const addressValue = document.getElementById("address").value.trim(); // 주소 가져오기
+
+    if (!amountValue) {
+      alert("금액을 입력해주세요.");
+      document.getElementById("textTitle").focus();
+      return;
+    }
+    if (!contentValue) {
+      alert("내용을 입력해주세요.");
+      document.getElementById("textInput").focus();
+      return;
+    }
+    if (!addressValue) {
+      alert("주소를 입력해주세요.");
+      document.getElementById("address").focus();
+      return;
+    }
+
+    let adList = JSON.parse(localStorage.getItem("adList")) || [];
+
+    // 마커 좌표 대신 주소를 바로 저장
+    const newAd = {
+      amount: amountValue,
+      content: contentValue,
+      uploadImg: document.getElementById("imagePreview").src,
+      address: addressValue,
+      createdAt: new Date().toLocaleString()
+    };
+
+    adList.push(newAd);
+    localStorage.setItem("adList", JSON.stringify(adList));
+
+    // 리스트 페이지로 이동
+    window.location.href = "./listTest.html";
+  }
+
+  // 아래 코드는 특정 상세 페이지에서 사용되는 것으로 보여 이 페이지에서는 주석 처리하거나 삭제해도 무방합니다.
+  /*
+  // 이미지, 금액, 제목, 내용 업데이트
+  document.getElementById("detailImg").src = ad.uploadImg || "./no_image.png";
+  document.getElementById("detailAmount").textContent = ad.amount + "원";
+  document.getElementById("detailTitle").textContent = "광고 제안";
+  document.getElementById("detailContent").textContent = ad.content;
+  */
+
+  // ===============================================================
+  // ===== 로그인 정보 저장 및 헤더 UI 변경을 위한 스크립트 추가 =====
+  // ===============================================================
+  (function () {
+    const authArea = document.getElementById("authArea");
+    const profile  = document.getElementById("profile");
+    const dropdown = document.getElementById("dropdown");
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+    }
+    window.logout = logout; // 전역 함수로 등록하여 onclick에서 호출 가능하게 함
+
+    if (profile && dropdown) {
+      profile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      });
+      window.addEventListener("click", (e) => {
+        if (!profile.contains(e.target)) dropdown.style.display = "none";
+      });
+    }
+
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser && authArea && profile) {
+      authArea.style.display = "none";
+      profile.style.display  = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
+    }
+  })();
+</script>
+</body>
+</html>

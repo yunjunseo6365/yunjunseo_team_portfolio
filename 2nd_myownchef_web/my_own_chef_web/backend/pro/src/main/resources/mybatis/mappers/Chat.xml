@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.chat.ChatMapper">
+
+    <!-- ChatRoomVO ResultMap -->
+    <resultMap id="ChatRoomResultMap" type="com.moc.pro.chat.vo.ChatRoomVO">
+        <id property="chatRoomId" column="CHAT_ROOM_ID"/>
+        <result property="postId" column="POST_ID"/>
+        <result property="postType" column="POST_TYPE"/>
+        <result property="ownerId" column="OWNER_ID"/>
+        <result property="participantId" column="PARTICIPANT_ID"/>
+        <result property="roomStatus" column="ROOM_STATUS"/>
+        <result property="isAccepted" column="IS_ACCEPTED"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="ownerNickname" column="OWNER_NICKNAME"/>
+        <result property="participantNickname" column="PARTICIPANT_NICKNAME"/>
+        <result property="postTitle" column="POST_TITLE"/>
+        <result property="hasUnread" column="HAS_UNREAD"/>
+    </resultMap>
+
+    <!-- ChatMessageVO ResultMap -->
+    <resultMap id="ChatMessageResultMap" type="com.moc.pro.chat.vo.ChatMessageVO">
+        <id property="chatMessageId" column="CHAT_MESSAGE_ID"/>
+        <result property="chatRoomId" column="CHAT_ROOM_ID"/>
+        <result property="senderId" column="SENDER_ID"/>
+        <result property="messageContent" column="MESSAGE_CONTENT"/>
+        <result property="messageType" column="MESSAGE_TYPE"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="senderNickname" column="SENDER_NICKNAME"/>
+    </resultMap>
+
+    <!-- ===== 채팅방 ===== -->
+
+    <!-- 채팅방 생성 -->
+    <insert id="insertChatRoom" parameterType="com.moc.pro.chat.vo.ChatRoomVO" useGeneratedKeys="true" keyProperty="chatRoomId" keyColumn="CHAT_ROOM_ID">
+        INSERT INTO TB_CHAT_ROOM (
+            POST_ID,
+            POST_TYPE,
+            OWNER_ID,
+            PARTICIPANT_ID,
+            ROOM_STATUS,
+            IS_ACCEPTED,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{postId},
+            #{postType},
+            #{ownerId},
+            #{participantId},
+            'ACTIVE',
+            'N',
+            SYSTIMESTAMP,
+            #{participantId}
+        )
+    </insert>
+
+    <!-- 채팅방 조회 (중복 확인용) -->
+    <select id="selectRoomByPostAndUsers" parameterType="map" resultMap="ChatRoomResultMap">
+        SELECT 
+            cr.CHAT_ROOM_ID,
+            cr.POST_ID,
+            cr.POST_TYPE,
+            cr.OWNER_ID,
+            cr.PARTICIPANT_ID,
+            cr.ROOM_STATUS,
+            cr.IS_ACCEPTED,
+            cr.CREATED_AT,
+            u1.USER_NICKNAME AS OWNER_NICKNAME,
+            u2.USER_NICKNAME AS PARTICIPANT_NICKNAME
+        FROM TB_CHAT_ROOM cr
+        LEFT JOIN TB_USER u1 ON cr.OWNER_ID = u1.USER_ID
+        LEFT JOIN TB_USER u2 ON cr.PARTICIPANT_ID = u2.USER_ID
+        WHERE cr.POST_ID = #{postId}
+          AND cr.OWNER_ID = #{ownerId}
+          AND cr.PARTICIPANT_ID = #{participantId}
+          AND ROWNUM = 1
+    </select>
+
+    <!-- 채팅방 ID로 조회 -->
+    <select id="selectRoomById" parameterType="int" resultMap="ChatRoomResultMap">
+        SELECT 
+            cr.CHAT_ROOM_ID,
+            cr.POST_ID,
+            cr.POST_TYPE,
+            cr.OWNER_ID,
+            cr.PARTICIPANT_ID,
+            cr.ROOM_STATUS,
+            cr.IS_ACCEPTED,
+            cr.CREATED_AT,
+            u1.USER_NICKNAME AS OWNER_NICKNAME,
+            u2.USER_NICKNAME AS PARTICIPANT_NICKNAME
+        FROM TB_CHAT_ROOM cr
+        LEFT JOIN TB_USER u1 ON cr.OWNER_ID = u1.USER_ID
+        LEFT JOIN TB_USER u2 ON cr.PARTICIPANT_ID = u2.USER_ID
+        WHERE cr.CHAT_ROOM_ID = #{chatRoomId}
+    </select>
+
+    <!-- 채팅방 수락 처리 -->
+    <update id="updateRoomAccepted" parameterType="int">
+        UPDATE TB_CHAT_ROOM SET
+            IS_ACCEPTED = 'Y',
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE CHAT_ROOM_ID = #{chatRoomId}
+    </update>
+
+    <!-- 채팅방 상태 변경 -->
+    <update id="updateRoomStatus" parameterType="map">
+        UPDATE TB_CHAT_ROOM SET
+            ROOM_STATUS = #{roomStatus},
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE CHAT_ROOM_ID = #{chatRoomId}
+    </update>
+
+    <!-- 사용자별 채팅방 목록 조회 -->
+    <select id="selectRoomsByUserId" parameterType="string" resultMap="ChatRoomResultMap">
+        SELECT 
+            cr.CHAT_ROOM_ID,
+            cr.POST_ID,
+            cr.POST_TYPE,
+            cr.OWNER_ID,
+            cr.PARTICIPANT_ID,
+            cr.ROOM_STATUS,
+            cr.IS_ACCEPTED,
+            cr.CREATED_AT,
+            u1.USER_NICKNAME AS OWNER_NICKNAME,
+            u2.USER_NICKNAME AS PARTICIPANT_NICKNAME,
+            CASE 
+                WHEN cr.POST_TYPE = 'sharetool' THEN (SELECT SHARETOOL_TITLE FROM TB_SHARETOOL WHERE SHARETOOL_ID = cr.POST_ID)
+                WHEN cr.POST_TYPE = 'shopping' THEN (SELECT WITHSHOPPING_TITLE FROM TB_WITHSHOPPING WHERE WITHSHOPPING_ID = cr.POST_ID)
+            END AS POST_TITLE,
+            CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM TB_CHAT_MESSAGE cm 
+                    WHERE cm.CHAT_ROOM_ID = cr.CHAT_ROOM_ID 
+                    AND cm.SENDER_ID != #{userId}
+                    AND cm.CREATED_AT > NVL(
+                        (SELECT LAST_READ_AT FROM TB_CHAT_ROOM_READ 
+                         WHERE CHAT_ROOM_ID = cr.CHAT_ROOM_ID AND USER_ID = #{userId}), 
+                        TO_TIMESTAMP('2000-01-01', 'YYYY-MM-DD')
+                    )
+                ) THEN 1 ELSE 0 
+            END AS HAS_UNREAD
+        FROM TB_CHAT_ROOM cr
+        LEFT JOIN TB_USER u1 ON cr.OWNER_ID = u1.USER_ID
+        LEFT JOIN TB_USER u2 ON cr.PARTICIPANT_ID = u2.USER_ID
+        WHERE (cr.OWNER_ID = #{userId} OR cr.PARTICIPANT_ID = #{userId})
+          AND cr.CHAT_ROOM_ID NOT IN (
+              SELECT CHAT_ROOM_ID 
+              FROM TB_CHAT_ROOM_HIDDEN 
+              WHERE USER_ID = #{userId}
+          )
+        ORDER BY cr.CREATED_AT DESC
+    </select>
+
+    <!-- ===== 채팅 메시지 ===== -->
+
+    <!-- 채팅방 메시지 목록 조회 -->
+    <select id="selectMessagesByRoomId" parameterType="int" resultMap="ChatMessageResultMap">
+        SELECT 
+            cm.CHAT_MESSAGE_ID,
+            cm.CHAT_ROOM_ID,
+            cm.SENDER_ID,
+            cm.MESSAGE_CONTENT,
+            cm.MESSAGE_TYPE,
+            cm.CREATED_AT,
+            u.USER_NICKNAME AS SENDER_NICKNAME
+        FROM TB_CHAT_MESSAGE cm
+        LEFT JOIN TB_USER u ON cm.SENDER_ID = u.USER_ID
+        WHERE cm.CHAT_ROOM_ID = #{chatRoomId}
+        ORDER BY cm.CREATED_AT ASC
+    </select>
+
+    <!-- 메시지 저장 -->
+    <insert id="insertMessage" parameterType="com.moc.pro.chat.vo.ChatMessageVO">
+        INSERT INTO TB_CHAT_MESSAGE (
+            CHAT_ROOM_ID,
+            SENDER_ID,
+            MESSAGE_CONTENT,
+            MESSAGE_TYPE,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{chatRoomId},
+            #{senderId},
+            #{messageContent},
+            'TEXT',
+            SYSTIMESTAMP,
+            #{senderId}
+        )
+    </insert>
+
+    <!-- 시스템 메시지 저장 -->
+    <insert id="insertSystemMessage" parameterType="com.moc.pro.chat.vo.ChatMessageVO">
+        INSERT INTO TB_CHAT_MESSAGE (
+            CHAT_ROOM_ID,
+            SENDER_ID,
+            MESSAGE_CONTENT,
+            MESSAGE_TYPE,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{chatRoomId},
+            #{senderId},
+            #{messageContent},
+            #{messageType},
+            SYSTIMESTAMP,
+            #{senderId}
+        )
+    </insert>
+
+    <!-- ===== 채팅방 숨김 ===== -->
+
+    <!-- 채팅방 숨김 처리 -->
+    <insert id="insertHiddenRoom" parameterType="map">
+        INSERT INTO TB_CHAT_ROOM_HIDDEN (
+            CHAT_ROOM_ID,
+            USER_ID,
+            HIDDEN_AT
+        ) VALUES (
+            #{chatRoomId},
+            #{userId},
+            SYSTIMESTAMP
+        )
+    </insert>
+
+    <!-- 채팅방 숨김 여부 확인 -->
+    <select id="checkHiddenRoom" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_CHAT_ROOM_HIDDEN
+        WHERE CHAT_ROOM_ID = #{chatRoomId}
+          AND USER_ID = #{userId}
+    </select>
+
+    <!-- ===== 채팅방 읽음 처리 ===== -->
+
+    <!-- 채팅방 읽음 시간 기록 (MERGE 사용) -->
+    <insert id="upsertChatRoomRead" parameterType="map">
+        MERGE INTO TB_CHAT_ROOM_READ target
+        USING (
+            SELECT #{chatRoomId} AS CHAT_ROOM_ID, 
+                   #{userId} AS USER_ID,
+                   SYSTIMESTAMP AS LAST_READ_AT
+            FROM DUAL
+        ) source
+        ON (target.CHAT_ROOM_ID = source.CHAT_ROOM_ID AND target.USER_ID = source.USER_ID)
+        WHEN MATCHED THEN
+            UPDATE SET target.LAST_READ_AT = source.LAST_READ_AT
+        WHEN NOT MATCHED THEN
+            INSERT (CHAT_ROOM_ID, USER_ID, LAST_READ_AT)
+            VALUES (source.CHAT_ROOM_ID, source.USER_ID, source.LAST_READ_AT)
+    </insert>
+
+</mapper>

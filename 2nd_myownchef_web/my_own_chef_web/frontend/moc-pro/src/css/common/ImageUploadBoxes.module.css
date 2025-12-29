@@ -1,0 +1,59 @@
+.image_upload_div{
+    display: flex;
+    margin-top: 13px;
+    width: 100%;
+}
+.text_title{
+    font-size: 150%;
+}
+
+.image_area{
+    width: 100%; 
+    height: 200px;
+    border: 2px  #C85C3C solid;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+.input_image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.label{
+    display: flex;
+    align-Items: center;
+    justify-Content: center;
+    height: 100%; 
+    cursor: pointer;
+}
+.image{
+    display: none;
+    object-fit: cover;
+}
+
+.remove_btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+
+.remove_btn:hover {
+    background-color: rgba(200, 0, 0, 0.9);
+    transform: scale(1.1);
+}

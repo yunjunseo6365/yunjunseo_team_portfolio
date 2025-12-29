@@ -1,0 +1,86 @@
+main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 30px;
+    }
+    .ad-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .ad-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .ad-item:hover {
+      border-color: var(--accent);
+      background: rgba(29,161,242,0.1);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    
+    .proposal {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .proposal input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+    .proposal button {
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .progress-wrap {
+      margin-top: 6px;
+    }
+    .progress-bar {
+      background: #eee;
+      border-radius: 8px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: var(--accent);
+      height: 100%;
+    }

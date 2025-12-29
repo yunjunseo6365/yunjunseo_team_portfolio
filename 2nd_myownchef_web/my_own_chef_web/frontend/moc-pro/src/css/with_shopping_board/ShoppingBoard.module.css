@@ -1,0 +1,144 @@
+.shopping_board_container {
+    width: 95%;
+    padding: 20px;
+    /* 중앙 정렬 */
+    margin: 0 auto;
+    background-color: #FAE7C3;
+    border-radius: 10px;
+}
+.shopping_board_container hr {
+    border: none;
+    border-top: none;
+    height: 1px;
+    background-color: #E0C9A6;  /* 원하셨던 두꺼운 검은 선 */
+    margin: 25px 0;
+}
+.shopping_board_container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.search_form_container {
+    width: 85%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column; /* 자식 요소(location_container, search_bar)를 세로로 배치 */
+    gap: 20px; /* 드롭다운과 버튼 사이의 간격 */
+}
+
+.location_container {
+    display: flex;
+    gap: 20px;
+}
+
+.sido_button, .sigungu_button {
+    flex: 1; /* 컨테이너의 공간을 1:1 비율로 나눠 가짐 */
+    padding: 12px;
+    font-size: 16px;
+    text-align: center;
+    border: 2px solid #C85C3C;
+    border-radius: 30px; /* 타원형 모양 */
+    background-color: #FEF7E9;
+}
+
+.search_bar {
+    width: 100%; /* 부모(.search_form_container) 너비에 100% 맞춤 */
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #C85C3C;
+    border: none;
+    cursor: pointer;
+}
+.search_bar:hover {
+    background-color: #b04a2c; /* 마우스 올렸을 때 약간 어두워지게 */
+}
+.card_div{
+    display: grid;
+    width: 100%;
+    gap: 3%;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-bottom: 1vh;
+}
+.shopping_card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #EADDC6;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2vh;
+    flex-direction: column;
+}
+.shopping_card > div{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.card_title { grid-area: title; font-size: 1.2rem; font-weight: bold; }
+.card_author { grid-area: author; }
+.card_date { grid-area: date; }
+.card_place { grid-area: place; }
+.view_details_button { grid-area: details; }
+/* 구인중/완료 버튼은 status 영역에 배치 */
+.status_button_ing, .status_button_done { grid-area: status; }
+.card_button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+.view_details_button {
+    background-color: #D5A16F;
+}
+.status_button_ing {
+    background-color: #A9A9A9; /* 회색 계열 */
+}
+.status_button_done {
+    background-color: #8793FF; /* 파란색 계열 */
+}
+.bottom_container {
+    display: flex;
+    justify-content: flex-end; /* 양쪽 끝으로 정렬 */
+    align-items: center;
+    width: 100%;
+    margin-top: 5vh;
+}
+
+.page_change_btn {
+    display: flex;
+    /* position을 이용한 중앙 정렬 */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.write_btn {
+    padding: 10px 20px;
+    color: white;
+    background-color: #C85C3C;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0; 
+}
+.write_btn:hover {
+    background-color: #b04a2c;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+}

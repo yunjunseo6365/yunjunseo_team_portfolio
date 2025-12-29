@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.sharetool.ShareToolMapper">
+
+    <!-- ShareToolVO ResultMap -->
+    <resultMap id="ShareToolResultMap" type="com.moc.pro.sharetool.vo.ShareToolVO">
+        <id property="shareToolId" column="SHARETOOL_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="shareToolTitle" column="SHARETOOL_TITLE"/>
+        <result property="shareToolProduct" column="SHARETOOL_PRODUCT"/>
+        <result property="shareToolContent" column="SHARETOOL_CONTENT"/>
+        <result property="shareToolStatus" column="SHARETOOL_STATUS"/>
+        <result property="shareToolProvince" column="SHARETOOL_PROVINCE"/>
+        <result property="shareToolCity" column="SHARETOOL_CITY"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+    </resultMap>
+
+    <!-- ShareToolImageVO ResultMap -->
+    <resultMap id="ShareToolImageResultMap" type="com.moc.pro.sharetool.vo.ShareToolImageVO">
+        <id property="shareToolImageId" column="SHARETOOL_IMAGE_ID"/>
+        <result property="shareToolId" column="SHARETOOL_ID"/>
+        <result property="shareToolImageUrl" column="SHARETOOL_IMAGE_URL"/>
+        <result property="shareToolImagePath" column="SHARETOOL_IMAGE_PATH"/>
+        <result property="shareToolImageIndex" column="SHARETOOL_IMAGE_INDEX"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+    </resultMap>
+
+    <!-- ===== 요리도구 나눔 게시글 ===== -->
+
+    <!-- 목록 조회 (지역 + 상태 필터, 페이징) -->
+    <select id="selectList" parameterType="map" resultMap="ShareToolResultMap">
+        SELECT 
+            st.SHARETOOL_ID,
+            st.USER_ID,
+            st.SHARETOOL_TITLE,
+            st.SHARETOOL_PRODUCT,
+            st.SHARETOOL_STATUS,
+            st.SHARETOOL_PROVINCE,
+            st.SHARETOOL_CITY,
+            st.CREATED_AT,
+            u.USER_NICKNAME,
+            (SELECT STI.SHARETOOL_IMAGE_URL
+             FROM TB_SHARETOOL_IMAGE STI
+             WHERE STI.SHARETOOL_ID = st.SHARETOOL_ID
+               AND STI.SHARETOOL_IMAGE_INDEX = 1
+               AND ROWNUM = 1) AS SHARETOOL_CONTENT
+        FROM TB_SHARETOOL st
+        LEFT JOIN TB_USER u ON st.USER_ID = u.USER_ID
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND st.SHARETOOL_STATUS != 'DELETED'
+            <if test="province != null and province != ''">
+                AND st.SHARETOOL_PROVINCE = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                AND st.SHARETOOL_CITY = #{city}
+            </if>
+            <if test="status != null and status != ''">
+                AND st.SHARETOOL_STATUS = #{status}
+            </if>
+        </where>
+        ORDER BY st.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 전체 개수 (필터 포함) -->
+    <select id="selectTotalCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_SHARETOOL
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND SHARETOOL_STATUS != 'DELETED'
+            <if test="province != null and province != ''">
+                AND SHARETOOL_PROVINCE = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                AND SHARETOOL_CITY = #{city}
+            </if>
+            <if test="status != null and status != ''">
+                AND SHARETOOL_STATUS = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 검색 (키워드 + 지역 필터, 페이징) -->
+    <select id="searchByKeyword" parameterType="map" resultMap="ShareToolResultMap">
+        SELECT 
+            st.SHARETOOL_ID,
+            st.USER_ID,
+            st.SHARETOOL_TITLE,
+            st.SHARETOOL_PRODUCT,
+            st.SHARETOOL_STATUS,
+            st.SHARETOOL_PROVINCE,
+            st.SHARETOOL_CITY,
+            st.CREATED_AT,
+            u.USER_NICKNAME,
+            (SELECT STI.SHARETOOL_IMAGE_URL
+             FROM TB_SHARETOOL_IMAGE STI
+             WHERE STI.SHARETOOL_ID = st.SHARETOOL_ID
+               AND STI.SHARETOOL_IMAGE_INDEX = 1
+               AND ROWNUM = 1) AS SHARETOOL_CONTENT
+        FROM TB_SHARETOOL st
+        LEFT JOIN TB_USER u ON st.USER_ID = u.USER_ID
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND st.SHARETOOL_STATUS != 'DELETED'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    st.SHARETOOL_TITLE LIKE '%' || #{keyword} || '%'
+                    OR st.SHARETOOL_PRODUCT LIKE '%' || #{keyword} || '%'
+                    OR st.SHARETOOL_CONTENT LIKE '%' || #{keyword} || '%'
+                )
+            </if>
+            <if test="province != null and province != ''">
+                AND st.SHARETOOL_PROVINCE = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                AND st.SHARETOOL_CITY = #{city}
+            </if>
+        </where>
+        ORDER BY st.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 검색 결과 개수 -->
+    <select id="selectSearchCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_SHARETOOL
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND SHARETOOL_STATUS != 'DELETED'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    SHARETOOL_TITLE LIKE '%' || #{keyword} || '%'
+                    OR SHARETOOL_PRODUCT LIKE '%' || #{keyword} || '%'
+                    OR SHARETOOL_CONTENT LIKE '%' || #{keyword} || '%'
+                )
+            </if>
+            <if test="province != null and province != ''">
+                AND SHARETOOL_PROVINCE = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                AND SHARETOOL_CITY = #{city}
+            </if>
+        </where>
+    </select>
+
+    <!-- 상세 조회 -->
+    <select id="selectById" parameterType="int" resultMap="ShareToolResultMap">
+        SELECT 
+            st.SHARETOOL_ID,
+            st.USER_ID,
+            st.SHARETOOL_TITLE,
+            st.SHARETOOL_PRODUCT,
+            st.SHARETOOL_CONTENT,
+            st.SHARETOOL_STATUS,
+            st.SHARETOOL_PROVINCE,
+            st.SHARETOOL_CITY,
+            st.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_SHARETOOL st
+        LEFT JOIN TB_USER u ON st.USER_ID = u.USER_ID
+                WHERE st.SHARETOOL_ID = #{shareToolId}
+                    AND st.SHARETOOL_STATUS != 'DELETED'
+    </select>
+
+    <!-- 작성 -->
+    <insert id="insertShareTool" parameterType="com.moc.pro.sharetool.vo.ShareToolVO" useGeneratedKeys="true" keyProperty="shareToolId" keyColumn="SHARETOOL_ID">
+        INSERT INTO TB_SHARETOOL (
+            USER_ID,
+            SHARETOOL_TITLE,
+            SHARETOOL_PRODUCT,
+            SHARETOOL_CONTENT,
+            SHARETOOL_STATUS,
+            SHARETOOL_PROVINCE,
+            SHARETOOL_CITY,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{userId},
+            #{shareToolTitle},
+            #{shareToolProduct},
+            #{shareToolContent},
+            #{shareToolStatus},
+            #{shareToolProvince},
+            #{shareToolCity},
+            SYSTIMESTAMP,
+            #{userId}
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateShareTool" parameterType="com.moc.pro.sharetool.vo.ShareToolVO">
+        UPDATE TB_SHARETOOL SET
+            SHARETOOL_TITLE = #{shareToolTitle},
+            SHARETOOL_PRODUCT = #{shareToolProduct},
+            SHARETOOL_CONTENT = #{shareToolContent},
+            SHARETOOL_STATUS = #{shareToolStatus},
+            SHARETOOL_PROVINCE = #{shareToolProvince},
+            SHARETOOL_CITY = #{shareToolCity},
+            UPDATED_AT = SYSTIMESTAMP,
+            UPDATED_BY = #{userId}
+        WHERE SHARETOOL_ID = #{shareToolId}
+    </update>
+
+    <!-- 삭제 -->
+    <!-- 삭제: 소프트 삭제로 상태값만 변경 -->
+    <update id="deleteShareTool" parameterType="int">
+        UPDATE TB_SHARETOOL SET
+            SHARETOOL_STATUS = 'DELETED',
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE SHARETOOL_ID = #{shareToolId}
+    </update>
+
+    <!-- 작성자 확인 -->
+    <select id="checkAuthor" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_SHARETOOL
+        WHERE SHARETOOL_ID = #{shareToolId}
+          AND USER_ID = #{userId}
+    </select>
+
+    <!-- 나눔 완료 처리 -->
+    <update id="updateStatusComplete" parameterType="int">
+        UPDATE TB_SHARETOOL SET
+            SHARETOOL_STATUS = '나눔완료',
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE SHARETOOL_ID = #{shareToolId}
+    </update>
+
+    <!-- ===== 요리도구 나눔 이미지 ===== -->
+
+    <!-- 이미지 목록 조회 -->
+    <select id="selectImagesByShareToolId" parameterType="int" resultMap="ShareToolImageResultMap">
+        SELECT 
+            SHARETOOL_IMAGE_ID,
+            SHARETOOL_ID,
+            SHARETOOL_IMAGE_URL,
+            SHARETOOL_IMAGE_PATH,
+            SHARETOOL_IMAGE_INDEX,
+            CREATED_AT,
+            CREATED_BY
+        FROM TB_SHARETOOL_IMAGE
+        WHERE SHARETOOL_ID = #{shareToolId}
+        ORDER BY SHARETOOL_IMAGE_INDEX ASC
+    </select>
+
+    <!-- 이미지 저장 -->
+    <insert id="insertImage" parameterType="com.moc.pro.sharetool.vo.ShareToolImageVO">
+        INSERT INTO TB_SHARETOOL_IMAGE (
+            SHARETOOL_ID,
+            SHARETOOL_IMAGE_URL,
+            SHARETOOL_IMAGE_PATH,
+            SHARETOOL_IMAGE_INDEX,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{shareToolId},
+            #{shareToolImageUrl},
+            #{shareToolImagePath},
+            #{shareToolImageIndex},
+            SYSTIMESTAMP,
+            #{createdBy}
+        )
+    </insert>
+
+    <!-- 이미지 전체 삭제 -->
+    <delete id="deleteImagesByShareToolId" parameterType="int">
+        DELETE FROM TB_SHARETOOL_IMAGE
+        WHERE SHARETOOL_ID = #{shareToolId}
+    </delete>
+
+    <!-- 이미지 개별 삭제 -->
+    <delete id="deleteImageById" parameterType="int">
+        DELETE FROM TB_SHARETOOL_IMAGE
+        WHERE SHARETOOL_IMAGE_ID = #{imageId}
+    </delete>
+
+</mapper>

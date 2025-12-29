@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마이페이지 - VertScreen</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <style>
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* 프로필 영역 */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    /* 프로필 이미지 영역 */
+    .profile-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #283c5f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-icon {
+      font-size: 50px;
+      color: white;
+    }
+
+    .profile-info {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* 파티 목록 */
+    .party-list {
+      margin-top: 40px;
+    }
+
+    .party-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .party-item:hover {
+      border-color: var(--accent);
+      background: rgba(29, 161, 242, 0.1);
+    }
+
+    /* --- 오버플로우 처리 --- */
+    .party-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex: 1;
+      min-width: 0;
+      /* flex 아이템이 부모를 넘어설 때 크기가 줄어들도록 설정 */
+    }
+
+    .party-title {
+      font-weight: bold;
+      flex-grow: 1;
+      /* 가능한 많은 공간을 차지 */
+      flex-shrink: 1;
+      /* 공간이 부족할 때 줄어들도록 함 */
+      white-space: nowrap;
+      /* 텍스트가 한 줄로 표시되도록 강제 */
+      overflow: hidden;
+      /* 영역을 벗어나는 텍스트 숨김 */
+      text-overflow: ellipsis;
+      /* 숨겨진 텍스트를 ...으로 표시 */
+    }
+
+    .party-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      /* 진행률 부분은 크기가 줄어들지 않도록 설정 */
+    }
+
+    /* ---------------------- */
+
+    .funding-text {
+      margin-left: 15px;
+      font-size: 15px;
+      color: #bdc3c7;
+      white-space: nowrap;
+    }
+
+    .progress-text {
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .progress-bar-container {
+      flex: none;
+      width: 200px;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+
+    @keyframes fillWater {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: var(--target-width);
+      }
+    }
+
+    @keyframes shimmer {
+      from {
+        background-position: 200% 0;
+      }
+
+      to {
+        background-position: 0% 0;
+      }
+    }
+
+    .review-btn {
+      display: none;
+      margin-left: 4em;
+      background: var(--accent);
+      color: #000;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.3s;
+    }
+
+    .review-btn:hover {
+      background: var(--accent-2);
+    }
+
+    /* 이 코드를 style 태그 안에 추가하세요 */
+    .progress-amount {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      /* 금액이 길어져도 줄바꿈 방지 */
+      margin-left: 10px;
+      /* 진행률 바와의 간격 */
+    }
+
+    .party-item {
+      cursor: pointer;
+      /* 마우스 올렸을 때 손가락 모양으로 변경 */
+      transition: background-color 0.2s;
+    }
+
+    .party-item:hover {
+      background-color: #1e293b;
+      /* 마우스 올렸을 때 배경색 살짝 변경 */
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <img src="./VertScreen_logo.png" alt="VertScreen_logo">
+      </div>
+      <div class="spacer"></div>
+      <div class="actions">
+        <a href="VertScreen_main.html" class="btn">메인으로</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="profile-section">
+      <div class="profile-image">
+        <span class="profile-icon">👤</span>
+      </div>
+      <div class="profile-info">
+        <p><strong>ID:</strong> <span id="userId">user123</span></p>
+        <p><strong>Email:</strong> <span id="userEmail">user@example.com</span></p>
+      </div>
+    </div>
+
+    <section class="party-list">
+      <h2>참여중인 파티</h2>
+    </section>
+
+    <div class="actions" style="margin-top: 20px;">
+      <a href="#" class="btn" onclick="logout()">로그아웃</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자 채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+
+  <script>
+    // 로그아웃 기능
+    function logout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    }
+
+    // ▼▼▼▼▼ 수정된 부분 ▼▼▼▼▼
+    // 리뷰 작성 기능 (이벤트 전파 중단 추가)
+    function writeReview(event, partyId) {
+      event.stopPropagation(); // 부모 요소(party-item)의 클릭 이벤트 실행을 막음
+      alert(`'${partyId}' 파티의 리뷰 작성 페이지로 이동합니다.`);
+      window.location.href = `review_detail.html?party=${partyId}`;
+    }
+
+    // 파티 상세 페이지로 이동하는 함수
+    // 파티 상세 페이지로 이동하는 함수
+    function goToPartyDetail(partyIndex) {
+      const partyList = JSON.parse(localStorage.getItem("partyList"));
+      if (partyList && partyList[partyIndex]) {
+        localStorage.setItem("selectedParty", JSON.stringify(partyList[partyIndex]));
+        window.location.href = `party-detail.html`;
+      }
+    }
+
+    // ▲▲▲▲▲ 수정된 부분 ▲▲▲▲▲
+
+    // 페이지 로드 시 실행
+    window.onload = () => {
+      // 1. 로그인 정보 불러오기
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser) {
+        document.getElementById('userId').innerText = currentUser;
+        document.getElementById('userEmail').innerText = currentUser;
+      } else {
+        alert("로그인이 필요합니다.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      // 2. 참여중인 파티 목록을 표시할 컨테이너
+      const partyListContainer = document.querySelector('.party-list');
+
+      // 3. 로컬 스토리지에서 'partyList' 데이터 가져오기
+      const partyList = JSON.parse(localStorage.getItem("partyList"));
+
+      // 4. 현재 유저가 참여한 모든 파티를 찾아 목록에 표시
+      let participatingPartiesFound = false;
+
+      if (partyList && Array.isArray(partyList)) {
+        // ▼▼▼▼▼ 수정된 부분 (forEach에 index 추가) ▼▼▼▼▼
+        partyList.forEach((partyData, index) => {
+          if (partyData.paidParticipants && partyData.paidParticipants.includes(currentUser)) {
+            participatingPartiesFound = true;
+
+            let totalAmount = partyData.amount;
+            let headcount = partyData.headcount;
+            let paidCount = partyData.paidParticipants ? partyData.paidParticipants.length : partyData.participants.length;
+            let progress = Math.min(100, Math.round(((totalAmount / headcount * paidCount) / totalAmount) * 100));
+            let perAmount = Math.floor(totalAmount / headcount);
+            let paidAmount = paidCount * perAmount;
+
+            // ▼▼▼▼▼ partyItemHTML 구조 수정 (onclick 이벤트 추가) ▼▼▼▼▼
+            const partyItemHTML = `
+              <div class="party-item" data-party="${partyData.title}" data-progress="${progress}" onclick="goToPartyDetail(${index})">
+                <div class="party-info">
+                  <div class="party-title">${partyData.title}</div>
+                  <div class="party-progress">
+                    <span class="progress-text">${progress}%</span>
+                    <div class="progress-bar-container">
+                      <div class="progress-bar"></div>
+                    </div>
+                    <span class="progress-amount">(${paidAmount.toLocaleString()} / ${totalAmount.toLocaleString()}원)</span>
+                  </div>
+                </div>
+                <div class="review-btn" onclick="writeReview(event, '${partyData.title}')">리뷰 작성</div>
+              </div>
+            `;
+            // ▲▲▲▲▲ partyItemHTML 구조 수정 ▲▲▲▲▲
+
+            partyListContainer.innerHTML += partyItemHTML;
+          }
+        });
+        // ▲▲▲▲▲ 수정된 부분 ▲▲▲▲▲
+      }
+
+      // 5. 참여한 파티가 하나도 없는 경우 메시지 표시
+      if (!participatingPartiesFound) {
+        partyListContainer.innerHTML += '<p>참여중인 파티가 없습니다.</p>';
+      }
+
+      // 6. 생성된 모든 파티 아이템에 애니메이션 및 리뷰 버튼 표시 로직 적용
+      document.querySelectorAll('.party-item').forEach(item => {
+        const progress = parseInt(item.dataset.progress);
+        const progressBar = item.querySelector('.progress-bar');
+        const reviewBtn = item.querySelector('.review-btn');
+
+        if (progressBar) {
+          progressBar.style.setProperty('--target-width', `${progress}%`);
+          progressBar.style.width = progress + "%";
+        }
+        if (reviewBtn && progress === 100) {
+          reviewBtn.style.display = 'inline-block';
+        }
+      });
+    };
+  </script>
+</body>
+
+</html>

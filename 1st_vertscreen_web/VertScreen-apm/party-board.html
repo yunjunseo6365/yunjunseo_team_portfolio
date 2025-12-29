@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파티 모집</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="./party-board.css">
+  <style>
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      /* 기존 배경색 유지 */
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      /* 애니메이션 시작을 위해 너비를 0으로 설정 */
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      /* 'fillWater' 애니메이션을 통해 너비가 채워지고, 'shimmer'로 반짝이는 효과를 줌 */
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+
+    /* 너비를 0에서 목표치까지 채우는 애니메이션 */
+    @keyframes fillWater {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: var(--target-width);
+      }
+
+      /* JavaScript에서 설정할 변수 */
+    }
+
+    /* 배경 그래디언트를 움직여 반짝이는 효과를 주는 애니메이션 */
+    @keyframes shimmer {
+      from {
+        background-position: 200% 0;
+      }
+
+      to {
+        background-position: 0% 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <h1>파티 모집 게시판</h1>
+
+    <div class="ad-list">
+      <a href="./party-detail-hardcoding1.html">
+        <div class="ad-item">
+          [고길동] - 제목: 파티 모집 예시 입니다 (100/100) - 2025. 05. 31
+          <div class="progress-wrap" style="margin-top:8px;">
+            <div class="progress-bar">
+              <div class="progress-fill" style="--target-width: 100%;"></div>
+            </div>
+            <small>진행률: 100%</small>
+          </div>
+        </div>
+      </a>
+    </div>
+      <div class="pagination">
+        <button>&laquo;</button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button>&raquo;</button>
+      </div>
+
+      <div class="proposal">
+        <input type="text" id="searchInput" placeholder="검색 내용을 입력하세요">
+        <a href="./party-make01.html"><button>파티원 모집 하기</button></a>
+      </div>
+  </main>
+
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자 채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+
+  <script>
+    /* 프로필 */
+    const profile = document.getElementById("profile");
+    const dropdown = document.getElementById("dropdown");
+    const authArea = document.getElementById("authArea");
+
+    profile.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+      window.location.href = "vertscreen_main.html";
+    }
+
+    window.addEventListener("click", (e) => {
+      if (!profile.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+
+    window.onload = () => {
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+      }
+
+      // 보호할 링크들
+      const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
+    ];
+
+      // NodeList.forEach()가 오래된 브라우저에서 지원되지 않을 수 있으므로 Array.from으로 감싸줍니다.
+      Array.from(protectedLinks).forEach(link => {
+        // link가 null이 아닐 경우에만 이벤트 리스너를 추가합니다.
+        if (link) {
+          link.addEventListener("click", (e) => {
+            if (!currentUser) {
+              e.preventDefault();
+              alert("로그인이 필요합니다.");
+              window.location.href = "login.html";
+            }
+          });
+        }
+      });
+    };
+
+    const adList = document.querySelector(".ad-list");
+    const searchInput = document.getElementById('searchInput');
+    const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+
+    // 초기 파티 목록 렌더링
+    partyList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const hardcodedFirst = adList.firstElementChild;
+
+    partyList.forEach(post => {
+      const newItem = document.createElement("div");
+      newItem.classList.add("ad-item");
+
+      let totalAmount = post.amount;
+      let headcount = post.headcount;
+      let perAmount = Math.floor(totalAmount / headcount);
+      let paidCount = post.paidParticipants ? post.paidParticipants.length : 0;
+      let paidAmount = paidCount * perAmount;
+      let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
+
+      // 검색 필터링을 위해 파티 제목과 작성자 정보를 데이터 속성으로 추가합니다.
+      newItem.dataset.title = post.title.toLowerCase();
+      newItem.dataset.author = post.author.toLowerCase();
+
+      newItem.innerHTML = `
+        <div class="post-info">
+          [${post.author}] - 제목: ${post.title} 
+          (${paidCount}/${headcount}) - 
+          ${new Date(post.createdAt).toLocaleDateString()}
+        </div>
+        <div class="progress-wrap" style="margin-top:8px;">
+          <div class="progress-bar">
+            <div class="progress-fill" style="--target-width: ${progress}%;"></div>
+          </div>
+          <small>진행률: ${progress}%</small>
+        </div>
+      `;
+
+      newItem.addEventListener("click", () => {
+        localStorage.setItem("selectedParty", JSON.stringify(post));
+        window.location.href = "party-detail.html";
+      });
+
+      adList.insertBefore(newItem, hardcodedFirst);
+    });
+
+    // 검색 기능을 review.html 스타일로 수정
+    function filterPartyList(searchTerm) {
+      const searchTermLower = searchTerm.toLowerCase();
+      const allItems = adList.querySelectorAll('.ad-item');
+
+      allItems.forEach(item => {
+        // 하드코딩된 항목과 동적으로 생성된 항목 모두에서 텍스트를 가져와 비교합니다.
+        const itemText = item.textContent.toLowerCase();
+
+        if (itemText.includes(searchTermLower)) {
+          item.style.display = 'block'; // 검색어와 일치하면 보이게 설정
+        } else {
+          item.style.display = 'none';  // 일치하지 않으면 숨김
+        }
+      });
+    }
+
+    // 검색 이벤트 리스너
+    searchInput.addEventListener('input', () => {
+      filterPartyList(searchInput.value);
+    });
+  </script>
+</body>
+
+</html>
+
+

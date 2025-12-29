@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.convreview.ConvReviewMapper">
+
+    <!-- ConvReviewVO ResultMap -->
+    <resultMap id="ConvReviewResultMap" type="com.moc.pro.convreview.vo.ConvReviewVO">
+        <id property="convReviewId" column="CONV_REVIEW_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="convReviewTitle" column="CONV_REVIEW_TITLE"/>
+        <result property="convReviewContent" column="CONV_REVIEW_CONTENT"/>
+        <result property="convReviewPrice" column="CONV_REVIEW_PRICE"/>
+        <result property="convReviewStore" column="CONV_REVIEW_STORE"/>
+        <result property="convReviewCategory" column="CONV_REVIEW_CATEGORY"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+    </resultMap>
+
+    <!-- ConvReviewImageVO ResultMap -->
+    <resultMap id="ConvReviewImageResultMap" type="com.moc.pro.convreview.vo.ConvReviewImageVO">
+        <id property="convReviewImageId" column="CONV_REVIEW_IMAGE_ID"/>
+        <result property="convReviewId" column="CONV_REVIEW_ID"/>
+        <result property="convReviewImageUrl" column="CONV_REVIEW_IMAGE_URL"/>
+        <result property="convReviewImagePath" column="CONV_REVIEW_IMAGE_PATH"/>
+        <result property="convReviewImageIndex" column="CONV_REVIEW_IMAGE_INDEX"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+    </resultMap>
+
+    <!-- ConvReviewCommentVO ResultMap -->
+    <resultMap id="ConvReviewCommentResultMap" type="com.moc.pro.convreview.vo.ConvReviewCommentVO">
+        <id property="convReviewCommentId" column="CONV_REVIEW_COMMENT_ID"/>
+        <result property="convReviewId" column="CONV_REVIEW_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="convReviewCommentContent" column="CONV_REVIEW_COMMENT_CONTENT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+    </resultMap>
+
+    <!-- ===== 편의점 리뷰 게시글 ===== -->
+
+    <!-- 목록 조회 (편의점 + 카테고리 필터, 페이징) -->
+    <select id="selectList" parameterType="map" resultMap="ConvReviewResultMap">
+        SELECT 
+            cr.CONV_REVIEW_ID,
+            cr.USER_ID,
+            cr.CONV_REVIEW_TITLE,
+            cr.CONV_REVIEW_PRICE,
+            cr.CONV_REVIEW_STORE,
+            cr.CONV_REVIEW_CATEGORY,
+            cr.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_CONV_REVIEW cr
+        LEFT JOIN TB_USER u ON cr.USER_ID = u.USER_ID
+        <where>
+            <if test="store != null and store != ''">
+                AND cr.CONV_REVIEW_STORE = #{store}
+            </if>
+            <if test="category != null and category != ''">
+                AND cr.CONV_REVIEW_CATEGORY = #{category}
+            </if>
+        </where>
+        ORDER BY cr.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 전체 개수 (필터 포함) -->
+    <select id="selectTotalCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_CONV_REVIEW
+        <where>
+            <if test="store != null and store != ''">
+                AND CONV_REVIEW_STORE = #{store}
+            </if>
+            <if test="category != null and category != ''">
+                AND CONV_REVIEW_CATEGORY = #{category}
+            </if>
+        </where>
+    </select>
+
+    <!-- 상세 조회 -->
+    <select id="selectById" parameterType="int" resultMap="ConvReviewResultMap">
+        SELECT 
+            cr.CONV_REVIEW_ID,
+            cr.USER_ID,
+            cr.CONV_REVIEW_TITLE,
+            cr.CONV_REVIEW_CONTENT,
+            cr.CONV_REVIEW_PRICE,
+            cr.CONV_REVIEW_STORE,
+            cr.CONV_REVIEW_CATEGORY,
+            cr.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_CONV_REVIEW cr
+        LEFT JOIN TB_USER u ON cr.USER_ID = u.USER_ID
+        WHERE cr.CONV_REVIEW_ID = #{convReviewId}
+    </select>
+
+    <!-- 작성 -->
+    <insert id="insertConvReview" parameterType="com.moc.pro.convreview.vo.ConvReviewVO" useGeneratedKeys="true" keyProperty="convReviewId" keyColumn="CONV_REVIEW_ID">
+        INSERT INTO TB_CONV_REVIEW (
+            USER_ID,
+            CONV_REVIEW_TITLE,
+            CONV_REVIEW_CONTENT,
+            CONV_REVIEW_PRICE,
+            CONV_REVIEW_STORE,
+            CONV_REVIEW_CATEGORY,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{userId},
+            #{convReviewTitle},
+            #{convReviewContent},
+            #{convReviewPrice},
+            #{convReviewStore},
+            #{convReviewCategory},
+            SYSTIMESTAMP,
+            #{userId}
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateConvReview" parameterType="com.moc.pro.convreview.vo.ConvReviewVO">
+        UPDATE TB_CONV_REVIEW SET
+            CONV_REVIEW_TITLE = #{convReviewTitle},
+            CONV_REVIEW_CONTENT = #{convReviewContent},
+            CONV_REVIEW_PRICE = #{convReviewPrice},
+            CONV_REVIEW_STORE = #{convReviewStore},
+            CONV_REVIEW_CATEGORY = #{convReviewCategory},
+            UPDATED_AT = SYSTIMESTAMP,
+            UPDATED_BY = #{userId}
+        WHERE CONV_REVIEW_ID = #{convReviewId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteConvReview" parameterType="int">
+        DELETE FROM TB_CONV_REVIEW
+        WHERE CONV_REVIEW_ID = #{convReviewId}
+    </delete>
+
+    <!-- 작성자 확인 -->
+    <select id="checkAuthor" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_CONV_REVIEW
+        WHERE CONV_REVIEW_ID = #{convReviewId}
+        AND USER_ID = #{userId}
+    </select>
+
+    <!-- ===== 편의점 리뷰 이미지 ===== -->
+
+    <!-- 이미지 목록 조회 -->
+    <select id="selectImagesByConvReviewId" parameterType="int" resultMap="ConvReviewImageResultMap">
+        SELECT *
+        FROM TB_CONV_REVIEW_IMAGE
+        WHERE CONV_REVIEW_ID = #{convReviewId}
+        ORDER BY CONV_REVIEW_IMAGE_INDEX ASC
+    </select>
+
+    <!-- 이미지 저장 -->
+    <insert id="insertImage" parameterType="com.moc.pro.convreview.vo.ConvReviewImageVO">
+        INSERT INTO TB_CONV_REVIEW_IMAGE (
+            CONV_REVIEW_ID,
+            CONV_REVIEW_IMAGE_URL,
+            CONV_REVIEW_IMAGE_PATH,
+            CONV_REVIEW_IMAGE_INDEX,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{convReviewId},
+            #{convReviewImageUrl},
+            #{convReviewImagePath},
+            #{convReviewImageIndex},
+            SYSTIMESTAMP,
+            'SYSTEM'
+        )
+    </insert>
+
+    <!-- 이미지 전체 삭제 -->
+    <delete id="deleteImagesByConvReviewId" parameterType="int">
+        DELETE FROM TB_CONV_REVIEW_IMAGE
+        WHERE CONV_REVIEW_ID = #{convReviewId}
+    </delete>
+
+    <!-- 이미지 개별 삭제 -->
+    <delete id="deleteImageById" parameterType="int">
+        DELETE FROM TB_CONV_REVIEW_IMAGE
+        WHERE CONV_REVIEW_IMAGE_ID = #{imageId}
+    </delete>
+
+    <!-- ===== 편의점 리뷰 댓글 ===== -->
+
+    <!-- 댓글 목록 조회 -->
+    <select id="selectCommentsByConvReviewId" parameterType="int" resultMap="ConvReviewCommentResultMap">
+        SELECT 
+            c.CONV_REVIEW_COMMENT_ID,
+            c.CONV_REVIEW_ID,
+            c.USER_ID,
+            c.CONV_REVIEW_COMMENT_CONTENT,
+            c.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_CONV_REVIEW_COMMENT c
+        LEFT JOIN TB_USER u ON c.USER_ID = u.USER_ID
+        WHERE c.CONV_REVIEW_ID = #{convReviewId}
+        ORDER BY c.CREATED_AT ASC
+    </select>
+
+    <!-- 댓글 작성 -->
+    <insert id="insertComment" parameterType="com.moc.pro.convreview.vo.ConvReviewCommentVO">
+        INSERT INTO TB_CONV_REVIEW_COMMENT (
+            CONV_REVIEW_ID,
+            USER_ID,
+            CONV_REVIEW_COMMENT_CONTENT,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{convReviewId},
+            #{userId},
+            #{convReviewCommentContent},
+            SYSTIMESTAMP,
+            #{userId}
+        )
+    </insert>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment" parameterType="int">
+        DELETE FROM TB_CONV_REVIEW_COMMENT
+        WHERE CONV_REVIEW_COMMENT_ID = #{commentId}
+    </delete>
+
+    <!-- 댓글 작성자 확인 -->
+    <select id="checkCommentAuthor" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_CONV_REVIEW_COMMENT
+        WHERE CONV_REVIEW_COMMENT_ID = #{commentId}
+        AND USER_ID = #{userId}
+    </select>
+
+</mapper>

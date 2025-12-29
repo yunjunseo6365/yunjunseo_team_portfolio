@@ -1,0 +1,180 @@
+/* 전체 컨테이너 */
+.conv_board_container {
+    width: 90%;
+    padding: 30px;
+    margin: 20px auto;
+    background-color: #FEF7E9;
+    border: 1px solid #E0C9A6;
+    border-radius: 15px;
+}
+
+.conv_board_container hr {
+    border: 0;
+    height: 1px;
+    background-color: #E0C9A6;
+    margin-bottom: 30px;
+}
+
+.conv_board_container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* 상단 검색바 */
+.header_container {
+    display: flex;
+    gap: 15px; /* 검색창과 버튼 사이 간격 */
+    margin-bottom: 30px;
+}
+
+.header_container input[type='text'] {
+    flex: 1; /* 남는 공간을 모두 차지 */
+    padding: 12px 20px;
+    font-size: 15px;
+    border: 1px solid #D5B487;
+    border-radius: 8px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.search_bar {
+    padding: 12px 24px; /* 높이를 input과 맞춤 */
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #C85C3C;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* 카테고리 탭 */
+.category_tab_group {
+    display: flex;
+    border-bottom: 1px solid #EADDC6;
+    margin-bottom: 30px; /* 카드 목록과의 간격 추가 */
+}
+
+.tab_button {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    background-color: transparent;
+    color: #555;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.tab_button:last-child { border-right: none; }
+.tab_button.active {
+    background-color: #D5A16F;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* ★★★ 카드 리스트 및 카드 스타일 (핵심 수정) ★★★ */
+.card_list_container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.shopping_card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #EADDC6;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.card_img {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden; /* 이미지가 둥근 모서리를 넘지 않도록 */
+}
+.card_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card_content {
+    flex-grow: 1; /* 남은 공간을 모두 차지 */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 제목과 아래 내용 간의 간격 */
+}
+
+.card_text_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+.card_title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.card_meta_info {
+    display: flex;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: #666;
+    white-space: nowrap; /* 작성자 정보가 줄바꿈되지 않도록 */
+}
+.card_place {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* 버튼 스타일 (구조 단순화) */
+.view_details_button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    background-color: #D5A16F;
+    margin-left: 20px; /* 콘텐츠와의 간격 */
+}
+
+/* 하단 페이지네이션 및 글쓰기 버튼 */
+.bottom_container {
+    display: flex;
+    justify-content: center; /* 중앙 정렬을 기본으로 */
+    align-items: center;
+    margin-top: 40px; /* 카드 목록과의 간격 */
+    position: relative; /* '글쓰기' 버튼을 위한 기준점 */
+    height: 40px; /* 높이를 지정해주면 안정적 */
+}
+
+
+.write_btn {
+    position: absolute; /* bottom_container를 기준으로 절대 위치 */
+    right: 0; /* 오른쪽에 붙이기 */
+    padding: 10px 20px;
+    color: white;
+    background-color: #C85C3C;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.write_btn:hover {
+    background-color: #b04a2c;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+}

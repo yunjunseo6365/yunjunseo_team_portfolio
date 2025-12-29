@@ -1,0 +1,151 @@
+    :root{
+      --bg:#0b0f1a;        /* 배경 */
+      --panel:#111827;     /* 패널 배경 */
+      --line:#1e293b;      /* 경계선 */
+      --text:#ffffff;      /* 메인 텍스트 */
+      --muted:#94a3b8;     /* 보조 텍스트 */
+      --accent:#1DA1F2;    /* 포인트 (로고 블루) */
+      --accent-2:#38BDF8;  /* 서브 포인트 */
+      --shadow: 0 25px 80px rgba(0,0,0,.4);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html, body {
+    height: 100%;
+    margin:0;
+    overflow-x: hidden;   /* 좌우 스크롤 막기 */
+    overflow-y: auto;     /* 세로 스크롤 허용 */
+    }
+    body{
+      margin:0; color:var(--text);
+      font-family: Inter, "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(900px 500px at 100% 0%, rgba(29,161,242,.12), transparent 40%),
+        radial-gradient(700px 450px at 0% 100%, rgba(56,189,248,.10), transparent 45%),
+        var(--bg);
+    }
+    a{color:inherit; text-decoration:none}
+
+    .locations {
+    margin-top: 60px;
+    }
+
+    .locations h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .location-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--text);
+      transition: all .25s ease;
+      cursor: pointer;
+    }
+
+    .location-card:hover {
+      border-color: var(--accent);
+      background: rgba(29,161,242,0.1);
+      transform: translateY(-3px);
+    }
+
+    /* ===== Header ===== */
+    .site-header{
+      height: 120px;
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(11,15,26,.82), rgba(11,15,26,.55));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav-wrap{max-width:1200px; margin:0 auto; align-items:center; gap:18px; padding:16px 20px; justify-content: space-between; display:flex;}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.2px}
+    .brand img {
+        min-height: 100px;
+        height: 100px;        /* 로고 이미지 크게 */
+        width: auto;         /* 비율 유지 */
+        object-fit: contain;
+        }
+    .nav{display:flex; gap:14px; margin-left:18px}
+    .nav a{padding:10px 12px; border-radius:999px; border:1px solid transparent; font-weight:700; color:#dbeafe}
+    .nav a:hover{background:#0e1729; border-color:#22314b}
+    .spacer{flex:1}
+    .actions{display:flex; gap:10px}
+    .btn{appearance:none; border:1px solid #22314b; background:#0e1729; color:#dbeafe; padding:10px 14px; border-radius:999px; font-weight:800; cursor:pointer}
+    .btn.primary{background:var(--accent); color:#fff; border-color:transparent}
+
+    /* ===== Main ===== */
+    main{max-width:1200px; margin:0 auto; padding:28px 20px 80px}
+    main img {
+    margin: 20px auto;  /* header 아래 충분히 떨어지도록 */
+    }
+
+    h1 {text-align: center;}
+    h2 {text-align: center;}
+    .poster {max-width: 80%; height: auto;}
+    /* nav 안의 로고(이미지) 사이즈 강제 통일 */
+
+    .poster img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    transition: transform .3s ease;
+    }
+
+    .poster img:hover {
+    transform: scale(1.02);
+    }
+  
+      /* 버튼을 감싸는 컨테이너: 중앙 정렬 */
+    .cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;   /* 위아래 여백 */
+    }
+
+    /* CTA 버튼 */
+    .cta-btn {
+    display: block;
+    margin: 40px auto;
+    width: 300px;              /* 버튼 가로 크기 (필요하면 더 크게 조절) */
+    padding: 18px 0;           /* 세로 여백 */
+    font-size: 20px;
+    font-weight: 900;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(29,161,242,0.4);
+    transition: all .3s ease;
+    text-align: center;
+    }
+
+    /* hover & active 효과 */
+    .cta-btn:hover {
+    background: var(--accent-2);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+    }
+
+    .cta-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+    }
+
+    /* ===== Footer ===== */
+    footer{margin-top:48px; border-top:1px solid rgba(255,255,255,.08); padding:28px 5px 5px 60px; text-align:left; color:var(--muted)};

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.notification.NotificationMapper">
+
+    <!-- CommentNotificationVO ResultMap -->
+    <resultMap id="CommentNotificationResultMap" type="com.moc.pro.notification.vo.CommentNotificationVO">
+        <id property="commentNotificationId" column="COMMENT_NOTIFICATION_ID"/>
+        <result property="postId" column="POST_ID"/>
+        <result property="postType" column="POST_TYPE"/>
+        <result property="postAuthorId" column="POST_AUTHOR_ID"/>
+        <result property="commenterId" column="COMMENTER_ID"/>
+        <result property="commentId" column="COMMENT_ID"/>
+        <result property="isRead" column="IS_READ"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="commenterNickname" column="COMMENTER_NICKNAME"/>
+        <result property="commentContent" column="COMMENT_CONTENT"/>
+    </resultMap>
+
+    <!-- ===== 댓글 알림 생성 ===== -->
+    <insert id="insertCommentNotification" parameterType="com.moc.pro.notification.vo.CommentNotificationVO"
+            useGeneratedKeys="true" keyProperty="commentNotificationId" keyColumn="COMMENT_NOTIFICATION_ID">
+        INSERT INTO TB_COMMENT_NOTIFICATION (
+            POST_ID,
+            POST_TYPE,
+            POST_AUTHOR_ID,
+            COMMENTER_ID,
+            COMMENT_ID,
+            IS_READ,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{postId},
+            #{postType},
+            #{postAuthorId},
+            #{commenterId},
+            #{commentId},
+            'N',
+            SYSTIMESTAMP,
+            #{createdBy}
+        )
+    </insert>
+
+    <!-- ===== 사용자별 댓글 알림 목록 조회 ===== -->
+    <select id="selectCommentNotificationsByUserId" parameterType="string" resultMap="CommentNotificationResultMap">
+        SELECT 
+            cn.COMMENT_NOTIFICATION_ID,
+            cn.POST_ID,
+            cn.POST_TYPE,
+            cn.POST_AUTHOR_ID,
+            cn.COMMENTER_ID,
+            cn.COMMENT_ID,
+            cn.IS_READ,
+            cn.CREATED_AT,
+            u.USER_NICKNAME AS COMMENTER_NICKNAME,
+            CASE 
+                WHEN cn.POST_TYPE = 'recipe' THEN 
+                    (SELECT RECIPE_COMMENT_CONTENT FROM TB_RECIPE_COMMENT WHERE RECIPE_COMMENT_ID = cn.COMMENT_ID)
+                WHEN cn.POST_TYPE = 'freeboard' THEN 
+                    (SELECT FREEBOARD_COMMENT_CONTENT FROM TB_FREEBOARD_COMMENT WHERE FREEBOARD_COMMENT_ID = cn.COMMENT_ID)
+                WHEN cn.POST_TYPE = 'conv-review' THEN 
+                    (SELECT CONV_REVIEW_COMMENT_CONTENT FROM TB_CONV_REVIEW_COMMENT WHERE CONV_REVIEW_COMMENT_ID = cn.COMMENT_ID)
+                WHEN cn.POST_TYPE = 'conv-recipe' THEN 
+                    (SELECT CONV_COMB_COMMENT_CONTENT FROM TB_CONV_COMB_COMMENT WHERE CONV_COMB_COMMENT_ID = cn.COMMENT_ID)
+            END AS COMMENT_CONTENT
+        FROM TB_COMMENT_NOTIFICATION cn
+        LEFT JOIN TB_USER u ON cn.COMMENTER_ID = u.USER_ID
+        WHERE cn.POST_AUTHOR_ID = #{userId}
+        ORDER BY cn.CREATED_AT DESC
+    </select>
+
+    <!-- ===== 읽지 않은 댓글 알림 개수 조회 ===== -->
+    <select id="selectUnreadCount" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_COMMENT_NOTIFICATION
+        WHERE POST_AUTHOR_ID = #{userId}
+          AND IS_READ = 'N'
+    </select>
+
+    <!-- ===== 모든 댓글 알림 읽음 처리 ===== -->
+    <update id="updateAllNotificationsAsRead" parameterType="string">
+        UPDATE TB_COMMENT_NOTIFICATION
+        SET IS_READ = 'Y'
+        WHERE POST_AUTHOR_ID = #{userId}
+          AND IS_READ = 'N'
+    </update>
+
+    <!-- ===== 사용자별 모든 댓글 알림 삭제 ===== -->
+    <delete id="deleteAllNotificationsByUserId" parameterType="string">
+        DELETE FROM TB_COMMENT_NOTIFICATION
+        WHERE POST_AUTHOR_ID = #{userId}
+    </delete>
+
+    <!-- ===== 특정 기간 경과한 알림 자동 삭제 ===== -->
+    <delete id="deleteOldNotifications" parameterType="int">
+        DELETE FROM TB_COMMENT_NOTIFICATION
+        WHERE CREATED_AT <![CDATA[ < ]]> SYSTIMESTAMP - #{days}
+    </delete>
+
+</mapper>

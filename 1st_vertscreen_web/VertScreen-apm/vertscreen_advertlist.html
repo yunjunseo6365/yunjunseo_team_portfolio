@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./VertScreen_advertlist.css">
+  <title>광고 종류</title>
+</head>
+<style>
+  /* 프로필 드롭다운 */
+  .profile {
+    position: relative;
+    display: none;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #000;
+  }
+
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-width: 140px;
+    box-shadow: var(--shadow);
+  }
+
+  .dropdown a,
+  .dropdown button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .dropdown a:hover,
+  .dropdown button:hover {
+    background: #22314b;
+  }
+</style>
+
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+        <div class="actions" id="authArea">
+          <a href="login.html" class="btn">로그인</a>
+          <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+        </div>
+        <div class="profile" id="profile">
+          <div class="avatar" id="avatar">U</div>
+          <div class="dropdown" id="dropdown">
+            <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+            <a href="./myPage.html">마이페이지</a>
+            <button onclick="logout()">로그아웃</button>
+          </div>
+        </div>
+    </div>
+  </header>
+  <main class="poster">
+    <h1>와이드컬러 조명</h1>
+    <hr><br>
+    <img src="./와이드칼라광고3.jpg"><br>
+    <img src="./와이드칼라광고2.jpg"><br>
+    <h1>디지털 포스터 광고</h1>
+    <hr><br>
+    <img src="./디지털포스터 광고3.jfif"><br>
+    <img src="./디지털포스터 광고2.jpg"><br>
+    <h1>사각 기둥 광고</h1>
+    <hr><br>
+    <img src="./사각기둥 광고3.png"><br>
+    <img src="./사각기둥광고2.jpg"><br>
+    <h2>파티 또는 개인의 목적에 맞는 광고 종류와 예시를 보여주는 자료화면 입니다.</h2>
+    <a href="./party-board.html"><button class="cta-btn">파티 모집하러 가기</button></a>
+  </main>
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자 채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+  <script>
+  (function () {
+    const authArea = document.getElementById("authArea");
+    const profile  = document.getElementById("profile");
+    const dropdown = document.getElementById("dropdown");
+
+    // 로그아웃 전역 등록 (onclick에서 사용)
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+    }
+    window.logout = logout;
+
+    // 드롭다운 토글 + 바깥 클릭 닫기
+    if (profile && dropdown) {
+      profile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      });
+      window.addEventListener("click", (e) => {
+        if (!profile.contains(e.target)) dropdown.style.display = "none";
+      });
+    }
+
+    // 로그인 상태 반영
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser && authArea && profile) {
+      authArea.style.display = "none";
+      profile.style.display  = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
+    }
+
+    // 보호 링크: 미로그인 시 차단
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
+    ];
+    protectedLinks.forEach(link => {
+      if (!link) return;
+      link.addEventListener("click", (e) => {
+        const u = localStorage.getItem("currentUser");
+        if (!u) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          location.href = "login.html";
+        }
+      });
+    });
+
+    // 파티 모집 하기 클릭시 로그인 확인
+    const partyBtn = document.querySelector('.cta-btn');
+
+    if (partyBtn) {
+      partyBtn.addEventListener("click", (e) => {
+        const u = localStorage.getItem("currentUser");
+        if (!u) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          location.href = "login.html";
+        } else {
+          location.href = "./party-board.html";
+        }
+      });
+    }
+  })();
+</script>
+
+</body>
+
+
+</html>
+
+

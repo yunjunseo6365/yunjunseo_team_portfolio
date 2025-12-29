@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>파티 상세 페이지</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./party-make01.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=pq3dgwzbry"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <style>
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+    @keyframes fillWater {
+      from { width: 0; }
+      to { width: var(--target-width); }
+    }
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: 0% 0; }
+    }
+  </style>
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./advertisement.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!--header end-->
+
+  <!-- 지도 -->
+  <div class="map" id="detail-map" style="width:1220px;height:400px;margin:20px auto;border-radius:8px;"></div>
+
+  <br> 
+
+  <!-- 선택한 광고 정보 -->
+  <h2>선택한 광고 상세 정보</h2>
+  <div class="party-ad">
+    <div>
+      <img id="detail-map-img" src="./party-make-image/서울역/서울역_와이드칼라2.jpg" alt="선택된 광고 이미지" style="width:600px;height:400px;border-radius:8px;">
+    </div>
+    <div class="info-text-wrap">
+      <p id="detail-poster">광고판명 : 서울역_와이드칼라2</p>
+      <p id="detail-text">설명 : 서울역의 와이드칼라입니다. </p>
+      <p id="detail-amount">가격 : 6,000,000 원</p>
+      <p id="detail-date">선택한 날짜 : 2025-06-19 ~ (한달간)</p>
+      <p id="detail-headcount">인원 수 : 100</p>
+      <p id="detail-peramount">1인당 예상 결제 금액 : 6,000 원</p>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- 업로드 이미지 & 제목/내용 -->
+  <h2>파티 내용</h2>
+  <div class="party-ad">
+    <div>
+      <img id="detail-upload-img" src="./희동이.png" alt="업로드 이미지" style="width:600px;height:400px;border-radius:8px;">
+    </div>
+    <div class="info-text-wrap">
+      <h3 id="detail-title">제목 : 파티 모집 예시 입니다</h3>
+      <p id="detail-content">내용 : 희동이의 생일을 맞이하여 모두 함께 축하해주세요!</p>
+    </div>
+  </div>
+  <br>
+  <!-- 파티원 수 및 결제 금액 -->
+  <h2>파티원 수 및 결제 금액</h2>
+  <div class="party-ad" id="payment-status">
+    <p>총 광고판 금액 : 6,000,000 원</p>
+        <p>결제 완료 인원 : 100 명</p>
+        <p>남은 인원 수 : 0 명</p>
+        <p>1인당 결제 금액 : 60,000 원</p>
+        <p>현재까지 결제 완료 금액 : 6,000,000 원</p>
+        <p>남은 금액 : 0 원</p>
+  </div>
+  <!-- 진행률 바 -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">진행률 : 0%</span>
+        <span id="remain-text">남은 금액: 0 원</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+  <div class="pnc-btn">
+  <a href="./party-board.html"><button class="cancel">돌아가기</button></a>
+</div>
+  
+
+  <script>
+  /* 프로필 */
+  const profile = document.getElementById("profile");
+  const dropdown = document.getElementById("dropdown");
+  const authArea = document.getElementById("authArea");
+
+  profile.addEventListener("click", () => {
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  });
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+      window.location.href = "vertscreen_main.html";
+    }
+    
+    window.addEventListener("click", (e) => {
+      if (!profile.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    window.onload = () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      authArea.style.display = "none";
+      profile.style.display = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+    }
+
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
+    ];
+
+    protectedLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        if (!currentUser) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          window.location.href = "login.html";
+        }
+      });
+    });
+  };
+      document.getElementById("progress-fill").style.width = "100%";
+      document.getElementById("progress-text").textContent = "진행률 : " + "100%";
+      document.getElementById("remain-text").textContent = "남은 금액: " + "0 원";
+
+      const map = new naver.maps.Map('detail-map', {
+        center: new naver.maps.LatLng(37.554722, 126.971433),
+        zoom: 17
+      });
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(37.554902, 126.972182),
+        map: map
+      });
+  </script>
+</body>
+</html>

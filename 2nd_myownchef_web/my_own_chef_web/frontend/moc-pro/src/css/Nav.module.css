@@ -1,0 +1,199 @@
+.main_container{
+    position: relative;
+    background-color: #FAE7C3;
+    width: 100%;
+}
+.nav_container{
+    position: fixed;
+    width: 15%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FAE7C3;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+}
+.nav_logo img{
+    width: 13vw;
+    height: 13vw;
+}
+.nav_logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.menu_container{
+    width: 90%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 10px;
+    position: relative;
+}
+.menu_container > div{
+    display: flex;
+    align-items: center;
+    padding: 2.5vh 0;
+}
+.menu_container a{
+    flex-grow: 1;
+    text-align: center;
+}
+.icons{
+    font-size: 180%;
+    color: #C55535;
+}
+.admin_container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 5vh 20px;
+    cursor: pointer;
+}
+.admin_container > div{
+    display: flex;
+}
+.admin_container a{
+    flex-grow: 1;
+    text-align: center;
+}
+.admin_container:hover .admindiv{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+.admindropmenu{
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+.icons2{
+    font-size: 160%;
+    position: absolute;
+    left: 13vw;
+}
+.icons3{
+    font-size: 160%;
+    position: absolute;
+    left: 12vw;
+}
+.storedrop_container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 간격을 조금 줄여도 좋습니다 */
+    font-size: 90%; /* 폰트 크기를 약간 키워도 좋습니다 */
+}
+.storedrop_container div {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.storedrop_container a {
+    flex-grow: 1;
+    text-align: left;
+    white-space: nowrap; /* 글자가 줄바꿈되지 않도록 설정 */
+}
+.storediv {
+    position: absolute;
+    top: 0; /* 부모의 상단에서 시작 */
+    left: 100%; /* 부모의 오른쪽 끝에서 시작 */
+    
+    /* width를 내용에 맞게 조절하거나 고정값으로 설정 */
+    width: 200px; /* 예시: 너비를 200px로 고정. 또는 width: max-content; 사용 가능 */
+    
+    background-color: #FAE7C3;
+    border: 1px #C55535 solid;
+    border-radius: 10px;
+    z-index: 10;
+    
+    /* 애니메이션 효과 수정 (선택 사항) */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px); /* Y축이 아닌 X축으로 이동하여 옆에서 나타나는 느낌을 줌 */
+    
+    /* 패딩은 그대로 유지하거나 조정 */
+    padding: 15px; /* 내부 여백 추가 */
+    box-sizing: border-box;
+}
+.admindiv {
+    /* width: 100%; 제거하고 고정 너비나 내용에 맞는 너비로 변경 */
+    width: 160px; /* 예시: 너비를 160px로 설정 */
+    
+    position: absolute;
+    background-color: #FAE7C3;
+    border: 1px #C55535 solid;
+    border-radius: 10px;
+
+    /* 위치 값을 bottom, left에서 top, left로 변경 */
+    bottom: 0;
+    left: 100%;
+    margin-left: 5px; /* 아이콘과 메뉴 사이에 약간의 여백 추가 (선택 사항) */
+    padding: 10px;
+
+    /* 애니메이션 효과 수정 */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px); /* 위아래(Y)가 아닌 좌우(X)로 변경 */
+}
+
+.admindrop_container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 간격을 조금 줄여서 더 밀도있게 보이게 함 */
+    padding: 15px; /* 상하좌우 여백을 주어 보기 좋게 만듦 */
+    text-align: left; /* 옆으로 나오는 메뉴는 보통 왼쪽 정렬이 더 자연스러움 */
+}
+
+.adminhover{
+    position: relative;
+}
+.admindrop_container a {
+    white-space: nowrap; /* 메뉴 텍스트가 줄바꿈되지 않도록 함 */
+}
+.store_container{
+    display: flex;
+    cursor: pointer;
+    flex-wrap: wrap;
+    position: relative;
+    padding: 10px 0px;
+}
+.store_container:hover .storediv{
+    height: auto; /* 또는 구체적인 높이값 */
+    padding: 10px 0;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.storedropmenu{
+    flex-grow: 1;
+    text-align: center;
+}
+.storehover{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.movediv{
+    position: fixed;
+    height: 100vh;
+    width: 13vw;
+    left: 15vw;
+    display: flex;
+    flex-direction: column;
+    margin-top: 55vh;
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden !important;
+}

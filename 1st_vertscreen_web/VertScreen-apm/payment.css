@@ -1,0 +1,94 @@
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: var(--panel);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .info-box {
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+    }
+    .info-box p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    .info-box p strong {
+      color: var(--text);
+    }
+    /* 진행률 바 */
+    .progress-wrap {
+      margin: 18px 0;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background: #1e293b;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 15px;
+      background: #0e1729;
+      color: var(--text);
+    }
+    input::placeholder {
+      color: var(--muted);
+    }
+    select {
+      appearance: none;
+      background: #0e1729 url("data:image/svg+xml;utf8,<svg fill='%23fff' height='24' viewBox='0 0 24 24' width='24'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
+      background-size: 14px;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: var(--accent-2);
+    }

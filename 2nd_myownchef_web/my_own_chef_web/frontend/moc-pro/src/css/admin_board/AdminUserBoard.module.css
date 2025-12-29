@@ -1,0 +1,136 @@
+.bodydiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 15px;
+}
+.titlediv{
+    width: 100%;
+    font-size: 180%;
+    color: white;
+    border-bottom: 1px #FAE7C3 solid;
+    padding: 15px 0px;
+}
+.searchdiv{
+    margin-top: 15px;
+    background-color: #FAE7C3;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 130%;
+    border-radius: 10px;
+}
+.searchdiv form{
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+.searchdiv label{
+    font-size: 1.2vw;
+    width: 10%;
+    text-align: center;
+}
+.searchdiv input[type="text"]{
+    width: 75%;
+    padding: 0.5vw 1vw;
+    font-size: 1vw;
+}
+.searchdiv button{
+    border: none;
+    color: white;
+    padding: 10px 50px;
+    font-size: 120%;
+    background-color: #C85C3C;
+    cursor: pointer;
+    width: 15%;
+}
+.boarddiv{
+    background-color: #FAE7C3;
+    margin-top: 20px;
+    border-radius: 10px;
+    min-height: 500px;
+    padding: 20px 10px;
+    position: relative;
+}
+.board_container{
+    display: grid;
+    grid-template-columns: 2fr 2fr 4fr 8fr 4fr 2fr;
+    width: 100%;
+}
+.board_container > div{
+    overflow-wrap: anywhere;
+}
+.boarditems_title{
+    background-color: #DDDFE1;
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px #cccccc solid;
+    font-size: 120%;
+}
+
+.boarditems_title_none{
+    background-color: #DDDFE1;
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border: none;
+    font-size: 120%;
+}
+.boarditems{
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px #cccccc solid;
+    font-size: clamp(0.3rem, calc(0.8rem + 0.1vw), 2rem);
+    border-bottom: 1px #cccccc solid;
+    align-items: center;
+}
+.boarditems_none{
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    font-size: clamp(0.3rem, calc(0.8rem + 0.1vw), 2rem);
+    border-bottom: 1px #cccccc solid;
+    align-items: center;
+}
+.boarditems_none button{
+    border: none;
+    padding: clamp(2px, 0.8vw, 30px) clamp(2px, 1.2vw, 30px);
+    background-color: #C85C3C;
+    color: white;
+    border-radius: clamp(1px, 0.5vw, 20px);
+    font-size: clamp(0.3rem, calc(0.8rem + 0.1vw), 2rem);
+    cursor: pointer;
+}
+.bottomdiv{
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    width: 100%;
+    margin-top: 1vw;
+    justify-content: center;
+}
+.bottomdiv button{
+    border: none;
+    padding: 8px 40px;
+    font-size: 120%;
+    color: white;
+    background-color: #C85C3C;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+}

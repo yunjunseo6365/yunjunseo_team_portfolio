@@ -1,0 +1,22 @@
+.btn_container{
+    display: flex;
+    gap: clamp(3px, 1.5vw, 50px);
+}
+.btn_container button:nth-child(1){
+    border: none;
+    border-radius: clamp(1px, 0.3vw, 20px);
+    background-color: #C85C3C;
+    padding: clamp(3px, 0.7vw, 30px) clamp(3px, 1.5vw, 30px);
+    font-size: clamp(0.3rem, calc(1rem + 0.1vw), 2rem);
+    cursor: pointer;
+    color: white;
+}
+.btn_container button:nth-child(2){
+    border: none;
+    border-radius: clamp(1px, 0.3vw, 20px);
+    background-color: rgba(201, 99, 35, 0.7);
+    padding: clamp(3px, 0.7vw, 30px) clamp(3px, 1.5vw, 30px);
+    color: white;
+    font-size: clamp(0.3rem, calc(1rem + 0.1vw), 2rem);
+    cursor: pointer;
+}

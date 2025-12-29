@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://192.168.0.5:5500/advertisement_detail.html -->
+<html lang="ko">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>광고 제안 상세</title>
+  <link rel="stylesheet" href="VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="advertisement_detail.css">
+  <script src="./광고 제안 게시판3_files/maps.js.다운로드"></script>
+  <style>
+  </style>
+</head>
+
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section id="naver-map-section">
+      <!-- 주소 부분 -->
+      <div class="address-box">
+        <h2>주소</h2>
+        <p>사당역 11번 출구</p>
+      </div>
+
+      <!-- 지도 -->
+      <div id="map"></div>
+
+      <!-- 이미지 + 금액 -->
+      <div class="map-and-calendar">
+        <div class="image-box">
+          <h3>이미지 샘플</h3>
+          <img src="./광고 제안 하드코딩 이미지2.jfif" id="detailImg" alt="업로드 이미지">
+        </div>
+        <div class="amount-box">
+          <h3>광고 금액</h3>
+          <p id="detailAmount">2,100,000</p>
+        </div>
+      </div>
+    </section>
+    <!-- ④ 광고 제안 내용 -->
+    <section style="margin:30px 20px;">
+      <h3>광고 제안 내용</h3>
+      <div style="background:#f1f5f9; padding:20px; border-radius:8px;">
+        <h4 id="detailTitle" style="margin-bottom:10px;"></h4>
+        <p id="detailContent">✓ 지원 포맷 : mp4
+          ✓ 사운드 지원
+          ✓ 운영시간 :05시~01시 (20시간)
+          ✓ 가격 옵션:
+          FULL - 20초 기준 1일 100회
+          HALF - 20초 기준 1일 50회 (50% 가격)
+
+          유동인구가 많은 핵심 역사라 광고효과가 높습니다.
+          다양한 연령층과 직군, 국내외 이용객들을 타겟팅하여 효과적인 광고를 진행할 수 있습니다.
+
+          ⭐️서포트 광고로 가장 선호하는 상품⭐️
+          밝고 선명한 LED패널로 주목도 높은 메시지를 전달할 수 있습니다.
+          다양한 연령층과 직군, 국내외 이용객들을 타겟팅하여 효과적인 광고를 진행할 수 있습니다.</p>
+      </div>
+    </section>
+
+    <!-- ⑤ 문의하기 + ⑥ 취소 -->
+    <div class="pnc-btn" style="margin-top:30px;">
+      <a href="./listTest.html" id="inquiryBtn">
+        <button class="make-party" onclick="alert('문의 이메일이 전송되었습니다')">문의하기</button>
+      </a>
+      <button class="cancel" onclick="window.location.href='./listTest.html'">돌아가기</button>
+    </div>
+  </main>
+  <script>
+    const currentUser = localStorage.getItem("currentUser"); // 로그인 정보 가져오기
+    const inquiryBtn = document.getElementById("inquiryBtn");
+    if (!currentUser && inquiryBtn) {
+      inquiryBtn.style.display = "none";
+    }
+
+
+    (function () {
+      const authArea = document.getElementById("authArea");
+      const profile = document.getElementById("profile");
+      const dropdown = document.getElementById("dropdown");
+
+      function logout() {
+        localStorage.removeItem("currentUser");
+        location.reload();
+      }
+      window.logout = logout;
+
+      if (profile && dropdown) {
+        profile.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+        window.addEventListener("click", (e) => {
+          if (!profile.contains(e.target)) dropdown.style.display = "none";
+        });
+      }
+
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser && authArea && profile) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
+      }
+
+      // 보호할 링크들
+      const protectedLinks = [
+        document.querySelector('a[href="./party-make01.html"]'),
+        document.querySelector('a[href="./party-detail.html"]'),
+        document.querySelector('a[href="./party-board.html"]'),
+        document.querySelector('a[href="./payment.html"]'),
+        document.querySelector('a[href="./advertisement.html"]'),
+        document.querySelector('a[href="./listTest.html"]'),
+        document.querySelector('a[href="./advertisement_detail.html"]')
+      ];
+      protectedLinks.forEach(link => {
+        if (!link) return;
+        link.addEventListener("click", (e) => {
+          const u = localStorage.getItem("currentUser");
+          if (!u) {
+            e.preventDefault();
+            alert("로그인이 필요합니다.");
+            location.href = "login.html";
+          }
+        });
+      });
+
+      // 문의하기 버튼 보호
+      const inquiryBtn = document.getElementById("inquiryBtn");
+      if (inquiryBtn) {
+        inquiryBtn.addEventListener("click", (e) => {
+          const u = localStorage.getItem("currentUser");
+          if (!u) {
+            e.preventDefault();
+            alert("로그인이 필요합니다.");
+            location.href = "login.html";
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>

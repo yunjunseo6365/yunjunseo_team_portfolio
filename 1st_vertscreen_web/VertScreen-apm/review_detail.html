@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>리뷰 상세 - VertScreen</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <style>
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px
+    }
+
+    .review-header {
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px
+    }
+
+    /* 파티 대표 이미지 스타일 */
+    #partyImageContainer {
+      width: 100%;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    #partyImageContainer img {
+      width: 70%;
+      /* 기존 100% → 70% */
+      max-width: 600px;
+      /* 너무 커지지 않도록 제한 */
+      display: block;
+      margin: 0 auto;
+      border-radius: var(--radius);
+    }
+
+    .review-form textarea {
+      width: 100%;
+      min-height: 60px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      resize: vertical;
+      background: var(--panel);
+      color: var(--text)
+    }
+
+    .review-form button {
+      background: var(--accent);
+      color: #000;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-weight: bold;
+      cursor: pointer;
+      border: none
+    }
+
+    .review-form button:hover:enabled {
+      background: var(--accent-2)
+    }
+
+    .review-form button:disabled {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    .stars {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+      cursor: pointer
+    }
+
+    .star {
+      font-size: 24px;
+      color: #ccc;
+      transition: color .2s
+    }
+
+    .star.selected {
+      color: gold
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      background: #1a2235
+    }
+
+    th {
+      background: var(--panel);
+      font-weight: bold
+    }
+
+    .table-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 8px
+    }
+
+    .table-buttons button {
+      padding: 6px 12px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      opacity: .85;
+      transition: all .3s ease
+    }
+
+    .table-buttons button:hover {
+      opacity: 1;
+      background: var(--accent-2)
+    }
+
+    .table-buttons button:active {
+      transform: scale(.95)
+    }
+
+    .upload-area {
+      margin-bottom: 15px
+    }
+
+    .upload-box {
+      display: inline-block;
+      padding: 10px 15px;
+      background: #22314b;
+      color: #fff;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background .2s
+    }
+
+    .upload-box:hover {
+      background: #1da1f2;
+      color: #000
+    }
+
+    .preview img {
+      max-width: 150px;
+      margin-top: 10px;
+      border-radius: 8px
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #9aa6b2;
+      margin-top: 6px
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand"><img src="./VertScreen_logo.png" alt="VertScreen_logo" /></div>
+      <div class="spacer"></div>
+      <div class="actions"><a href="review.html" class="btn">목록으로</a></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="review-header">
+      <h2 id="reviewTitle">리뷰 상세</h2>
+    </div>
+
+    <div id="partyImageContainer"></div>
+
+    <div class="review-list" id="reviewList">
+      <table>
+        <thead>
+          <tr>
+            <th>별점</th>
+            <th>이미지</th>
+            <th>✏&ensp; 리뷰 내용</th>
+          </tr>
+        </thead>
+        <tbody id="reviewTableBody"></tbody>
+      </table>
+      <div class="table-buttons">
+        <button id="loadMoreBtn" style="display:none;">더보기</button>
+        <button id="collapseBtn" style="display:none;">축소</button>
+      </div>
+    </div>
+
+    <div class="review-form" id="reviewFormSection">
+      <h3>리뷰 작성</h3>
+      <div class="upload-area">
+        <label for="reviewImage" class="upload-box"><span>이미지 업로드</span></label>
+        <input type="file" id="reviewImage" accept="image/*" style="display:none" />
+        <div id="preview" class="preview"></div>
+        <div class="hint">※ 이미지는 자동으로 축소·압축되어 보여집니다.</div>
+      </div>
+      <div class="stars" id="starContainer"></div>
+      <textarea id="reviewText" placeholder="리뷰를 입력하세요"></textarea>
+      <button id="saveBtn" type="button" onclick="saveReview()">등록</button>
+    </div>
+
+    <footer>
+      <p><strong>Project A P M</strong></p>
+      <p>대표자 채희수</p>
+      <p>이메일 dooly123@naver.com</p>
+      <p>연락처 010 1234 5678</p>
+    </footer>
+
+    <script>
+      // ===== 전역 변수 및 DOM 요소 선언 =====
+      let uploadedImage = ""; // 업로드된 이미지의 Data URL을 저장할 변수
+      const saveBtn = document.getElementById("saveBtn"); // '등록' 버튼
+      const fileInput = document.getElementById("reviewImage"); // 이미지 파일 입력 필드
+      const preview = document.getElementById("preview"); // 이미지 미리보기 영역
+
+      // ===== 이미지 처리 관련 함수 =====
+
+      /**
+       * [이미지 처리 함수 1] 파일 객체를 이미지 객체로 변환합니다.
+       * @param {File} file - 사용자가 업로드한 파일 객체
+       * @returns {Promise<HTMLImageElement>} - 로드된 이미지 객체를 resolve하는 프로미스
+       */
+      function loadImageFromFile(file) {
+        // Promise를 사용하여 비동기적인 파일 로딩을 처리합니다.
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader(); // FileReader API를 사용하여 파일을 읽습니다.
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => resolve(img); // 이미지 로딩이 성공하면 resolve 호출
+            img.onerror = reject; // 이미지 로딩 실패 시 reject 호출
+            img.src = reader.result; // FileReader가 읽은 Data URL을 이미지 소스로 설정
+          };
+          reader.onerror = reject; // 파일 읽기 실패 시 reject 호출
+          reader.readAsDataURL(file); // 파일을 Data URL 형태로 읽기 시작
+        });
+      }
+
+      /**
+       * [이미지 처리 함수 2] 이미지 크기를 줄이고 압축합니다.
+       * @param {HTMLImageElement} img - 리사이징할 이미지 객체
+       * @param {number} maxW - 최대 너비
+       * @param {number} maxH - 최대 높이
+       * @returns {string} - 압축된 이미지의 Data URL (JPEG 형식)
+       */
+      function downscale(img, maxW = 800, maxH = 800) {
+        let { width, height } = img;
+        // 원본 비율을 유지하면서 최대 크기에 맞게 비율을 계산합니다.
+        const ratio = Math.min(maxW / width, maxH / height, 1);
+        const w = Math.round(width * ratio);
+        const h = Math.round(height * ratio);
+
+        // canvas를 사용해 이미지를 다시 그려 리사이징합니다.
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+
+        // canvas의 내용을 JPEG 형식, 70% 품질로 압축하여 Data URL로 반환합니다.
+        return canvas.toDataURL("image/jpeg", 0.7);
+      }
+
+      /**
+       * [이미지 처리 함수 3] 파일 압축 프로세스를 총괄하는 비동기 함수입니다.
+       * @param {File} file - 압축할 파일 객체
+       * @returns {Promise<string>} - 압축된 이미지의 Data URL을 resolve하는 프로미스
+       */
+      async function compressFileToDataURL(file) {
+        const img = await loadImageFromFile(file); // 파일을 이미지 객체로 변환
+        return downscale(img, 800, 800); // 이미지 객체를 리사이징 및 압축
+      }
+
+      // 파일 입력(change) 이벤트 리스너: 사용자가 이미지를 선택했을 때 실행됩니다.
+      fileInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0]; // 선택된 파일 가져오기
+        if (!file) {
+          removeImage(); // 파일 선택을 취소하면 이미지 제거
+          return;
+        }
+
+        saveBtn.disabled = true; // 이미지 처리 중에는 '등록' 버튼 비활성화
+        preview.innerHTML = '<span class="hint">이미지 처리 중...</span>'; // 처리 중 메시지 표시
+
+        try {
+          // 위에서 정의한 함수들을 호출하여 이미지 압축을 실행합니다.
+          const dataURL = await compressFileToDataURL(file);
+          uploadedImage = dataURL; // 압축된 이미지 데이터를 전역 변수에 저장
+          // 미리보기 UI를 생성합니다. (이미지 + 삭제 버튼)
+          preview.innerHTML = `
+          <div style="display:inline-flex; align-items:center; gap:5px;">
+            <img src="${uploadedImage}" alt="미리보기" />
+            <button type="button" onclick="removeImage()" style="background:none;border:none;color:white;cursor:pointer;font-size:18px">×</button>
+          </div>`;
+        } catch (err) {
+          console.error(err);
+          // 오류 발생 시, 관련 데이터를 초기화하고 사용자에게 알립니다.
+          removeImage();
+          alert("이미지 처리 중 오류가 발생했습니다. 다른 이미지를 시도해주세요.");
+        } finally {
+          saveBtn.disabled = false; // 처리가 끝나면(성공/실패 무관) '등록' 버튼 다시 활성화
+        }
+      });
+
+      /**
+       * 이미지 미리보기 제거 및 관련 데이터 초기화 함수입니다.
+       */
+      function removeImage() {
+        uploadedImage = ""; // 전역 변수 초기화
+        preview.innerHTML = ""; // 미리보기 UI 제거
+        fileInput.value = ""; // 파일 입력 필드의 값 초기화 (같은 파일을 다시 선택할 수 있도록)
+      }
+
+
+      // ===== 별점 UI 생성 및 이벤트 처리 =====
+      const starContainer = document.getElementById("starContainer"); // 별점 컨테이너
+      let selectedRating = 0; // 선택된 별점을 저장할 변수
+
+      // 1부터 5까지 반복하여 5개의 별(span) 요소를 생성합니다.
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement("span");
+        star.className = "star";
+        star.innerHTML = "★";
+        // 각 별에 클릭 이벤트를 추가합니다.
+        star.onclick = () => {
+          selectedRating = i; // 클릭된 별의 순번(i)을 선택된 별점으로 저장
+          // 모든 별을 순회하며 클릭된 별점(i)보다 앞에 있는 별들은 'selected' 클래스를 추가(노란색으로)하고, 뒤는 제거합니다.
+          document.querySelectorAll(".star").forEach((s, idx) => {
+            s.classList.toggle("selected", idx < i);
+          });
+        };
+        starContainer.appendChild(star);
+      }
+
+
+      // ===== 리뷰 데이터 처리 관련 =====
+
+      // 현재 페이지 URL의 쿼리 파라미터(?party=...)를 파싱합니다.
+      const params = new URLSearchParams(window.location.search);
+      // 'party' 키의 값(예: '파티이름')을 가져와 어떤 파티의 리뷰 페이지인지 식별합니다.
+      const partyName = params.get("party");
+      const reviewTableBody = document.getElementById("reviewTableBody"); // 리뷰가 표시될 테이블의 tbody
+
+      // '더보기' 기능(페이지네이션)을 위한 변수들
+      let loadedCount = 0;      // 현재까지 로드된 리뷰의 개수
+      const LOAD_BATCH = 5;     // 한 번에 불러올 리뷰의 개수
+      let sortedReviews = [];   // 현재 파티의 모든 리뷰를 시간순으로 정렬하여 담을 배열
+
+
+      /**
+       * localStorage에서 리뷰를 불러와 화면에 표시하는 메인 함수입니다.
+       */
+      function loadReviews() {
+        // localStorage에서 'reviews' 키로 저장된 모든 리뷰 데이터를 가져옵니다. 없으면 빈 배열('[]')을 사용합니다.
+        const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+        // 모든 리뷰 중에서 현재 파티 이름과 일치하는 리뷰만 필터링하고,
+        // timestamp를 기준으로 내림차순 정렬하여 최신 리뷰가 가장 위에 오도록 합니다.
+        sortedReviews = reviews
+          .filter(r => r.party === partyName)
+          .sort((a, b) => b.timestamp - a.timestamp);
+
+        reviewTableBody.innerHTML = ""; // 기존에 표시되던 리뷰 목록을 초기화합니다.
+        loadedCount = 0;              // 로드된 리뷰 개수도 초기화합니다.
+        loadMore();                   // 첫 번째 리뷰 배치를 로드하기 위해 loadMore 함수를 호출합니다.
+      }
+
+
+      /**
+       * '더보기' 기능을 위해 정해진 개수만큼 리뷰를 화면에 추가하는 함수입니다.
+       */
+      function loadMore() {
+        // 정렬된 전체 리뷰 배열에서, 현재 로드된 개수(loadedCount)부터 다음 배치(LOAD_BATCH)만큼 잘라옵니다.
+        const slice = sortedReviews.slice(loadedCount, loadedCount + LOAD_BATCH);
+
+        // 잘라온 리뷰 조각(slice)을 순회하며 각 리뷰 데이터를 HTML 테이블 행(tr)으로 만듭니다.
+        slice.forEach(r => {
+          const tr = document.createElement("tr");
+
+          // 별점 셀(td) 생성
+          const tdRating = document.createElement("td");
+          tdRating.textContent = "⭐".repeat(r.rating);
+
+          // 이미지 셀(td) 생성
+          const tdImage = document.createElement("td");
+          if (r.image) { // 리뷰에 이미지가 있으면 img 태그를, 없으면 '-' 텍스트를 표시합니다.
+            tdImage.innerHTML = `<img src="${r.image}" style="max-width:100px;border-radius:6px" />`;
+          } else {
+            tdImage.textContent = "-";
+          }
+
+          // 리뷰 내용 셀(td) 생성
+          const tdContent = document.createElement("td");
+          tdContent.textContent = r.content;
+
+          // 생성된 셀들을 행(tr)에 추가하고, 완성된 행을 테이블(tbody)에 추가합니다.
+          tr.appendChild(tdRating);
+          tr.appendChild(tdImage);
+          tr.appendChild(tdContent);
+          reviewTableBody.appendChild(tr);
+        });
+
+        // 로드된 리뷰 개수를 업데이트합니다.
+        loadedCount += slice.length;
+
+        // '더보기' 버튼 표시/숨김 처리: 아직 불러올 리뷰가 남아있으면 버튼을 표시하고, 아니면 숨깁니다.
+        document.getElementById("loadMoreBtn").style.display =
+          loadedCount < sortedReviews.length ? "inline-block" : "none";
+
+        // '축소' 버튼 표시/숨김 처리: 첫 배치를 초과하여 리뷰가 로드된 경우에만 버튼을 표시합니다.
+        document.getElementById("collapseBtn").style.display =
+          loadedCount > LOAD_BATCH ? "inline-block" : "none";
+      }
+
+      /**
+       * 작성된 리뷰를 저장하는 함수입니다. '등록' 버튼 클릭 시 실행됩니다.
+       */
+      function saveReview() {
+        // 입력된 리뷰 텍스트를 가져와 앞뒤 공백을 제거합니다.
+        const text = document.getElementById("reviewText").value.trim();
+
+        // 입력 값 유효성 검사
+        if (!text) {
+          alert("리뷰를 입력해주세요.");
+          return;
+        }
+        if (selectedRating === 0) {
+          alert("별점을 선택해주세요.");
+          return;
+        }
+        if (!confirm("리뷰를 등록하시겠습니까?")) {
+          return;
+        }
+
+        // localStorage에 저장할 새로운 리뷰 객체를 생성합니다.
+        const newReview = {
+          party: partyName,           // 현재 파티 이름
+          content: text,              // 리뷰 내용
+          rating: selectedRating,     // 별점
+          image: uploadedImage || null, // 업로드된 이미지(없으면 null)
+          timestamp: Date.now()       // 현재 시간을 타임스탬프로 기록 (정렬에 사용)
+        };
+
+        try {
+          // 기존 리뷰 데이터를 불러와 새 리뷰를 추가한 후, 다시 localStorage에 저장합니다.
+          const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+          reviews.push(newReview);
+          localStorage.setItem("reviews", JSON.stringify(reviews));
+        } catch (err) {
+          console.error(err);
+          // localStorage 저장 공간이 가득 찼을 때 발생하는 오류(QuotaExceededError)를 처리합니다.
+          if (err && (err.name === "QuotaExceededError" || err.code === 22)) {
+            alert("저장공간이 가득 찼습니다. 이미지 크기를 더 줄이거나, 기존 리뷰 이미지를 삭제 후 다시 시도해주세요.");
+          } else {
+            alert("리뷰 저장 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
+          }
+          return; // 오류 발생 시 함수 종료
+        }
+
+        // 리뷰 등록 성공 알림
+        alert("리뷰가 성공적으로 등록되었습니다.");
+
+        // 입력 폼 초기화
+        document.getElementById("reviewText").value = "";
+        selectedRating = 0;
+        removeImage(); // 이미지 미리보기 제거 및 관련 데이터 초기화
+        document.querySelectorAll(".star").forEach(s => s.classList.remove("selected")); // 별점 UI 초기화
+
+        // 리뷰 목록을 다시 로드하여 새로 등록된 리뷰를 화면에 바로 표시합니다.
+        loadReviews();
+      }
+
+
+      // ===== 이벤트 리스너 연결 및 페이지 초기화 =====
+
+      // '더보기' 버튼에 클릭 이벤트 리스너를 연결하여 loadMore 함수가 실행되도록 합니다.
+      document.getElementById("loadMoreBtn").addEventListener("click", loadMore);
+      // '축소' 버튼에 클릭 이벤트 리스너를 연결하여 리뷰 목록을 처음부터 다시 로드(축소)하도록 합니다.
+      document.getElementById("collapseBtn").addEventListener("click", loadReviews);
+
+
+      // 페이지의 모든 콘텐츠가 로드된 후 실행될 초기화 함수입니다.
+      window.onload = () => {
+        // [초기화 1] 파티 대표 이미지 로드
+        // localStorage에서 파티 목록을 가져와 현재 파티 이름과 일치하는 파티 정보를 찾습니다.
+        const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+        const targetParty = partyList.find(p => p.title === partyName);
+        const imageContainer = document.getElementById("partyImageContainer");
+
+        // 해당 파티에 대표 이미지가 있으면 화면에 표시합니다.
+        if (targetParty && targetParty.uploadImg) {
+          imageContainer.innerHTML = `<img src="${targetParty.uploadImg}" alt="${targetParty.title} 대표 이미지">`;
+        }
+
+        // [초기화 2] 기존 리뷰 목록 로드
+        loadReviews();
+
+        // [초기화 3] 로그인 상태 확인 및 UI 처리
+        const currentUser = localStorage.getItem("currentUser"); // localStorage에서 현재 로그인한 사용자 정보를 가져옵니다.
+        const reviewFormSection = document.getElementById("reviewFormSection"); // 리뷰 작성 폼 섹션
+
+        // 로그인한 사용자가 없으면 (비로그인 상태)
+        if (!currentUser) {
+          reviewFormSection.style.display = "none"; // 리뷰 작성 폼을 숨깁니다.
+          // "로그인 후 이용 가능"하다는 안내 메시지를 생성하여 폼 위치에 추가합니다.
+          const msg = document.createElement("p");
+          msg.innerText = "리뷰 작성은 로그인 후 이용 가능합니다.";
+          msg.style.color = "gray";
+          msg.style.textAlign = "center";
+          reviewFormSection.parentNode.insertBefore(msg, reviewFormSection);
+        }
+        // 로그인 상태라면 별도의 조치 없이 리뷰 작성 폼을 그대로 보여줍니다.
+      };
+    </script>
+  </main>
+</body>
+
+</html>

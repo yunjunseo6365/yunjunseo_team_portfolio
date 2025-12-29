@@ -1,0 +1,50 @@
+*{
+  box-sizing: border-box;
+  font-family: 'GMarketSans', sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.3rem, 1rem, 3rem);
+  padding: 0;
+  margin: 0;
+}
+
+.nev{
+  width: 15%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.header{
+  width: 100%;
+  padding: 0 1%;
+  margin-bottom: 1%;
+}
+
+.body > div{
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.body{
+  margin-bottom: clamp(10px, 3vw, 200px);
+  width: 100%;
+  min-height: 80%;
+}
+.main{
+  position: relative;
+  width: clamp(100px, 85vw, 5000px);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.footer{
+  width: 100%;
+  position: absolute;
+  bottom: clamp(-50px, -5vw, -1000px);
+  height: clamp(50px, 5vw, 1000px);
+}
+.App {
+  display: flex;
+  background-color: #C85C3C;
+}

@@ -1,0 +1,226 @@
+/* 전체 헤더 바 */
+.header_container {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 정렬 */
+    align-items: center;
+    background-color: #C85C3C; /* CSS 변수 혹은 직접 색상 코드 사용 */
+    height: 70px; /* 프로필 이미지가 커졌으니 높이도 살짝 키우는 것이 좋습니다 */
+    padding: 0 40px;
+    color: #FAE7C3;
+}
+
+/* 왼쪽 메뉴 그룹 */
+.left_group {
+    display: flex;
+    align-items: center;
+    gap: 150px; /* '공지사항'과 '소개' 메뉴 사이의 간격 */
+}
+
+/* 오른쪽 메뉴 그룹 */
+.right_group {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* '아이콘 그룹'과 '프로필 그룹' 사이의 간격 */
+}
+
+/* ★ 1번 해결: 아이콘과 텍스트가 함께 있는 링크 공통 스타일 */
+.nav_link {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 아이콘과 텍스트 사이의 간격 */
+    text-decoration: none;
+    color: #FAE7C3;
+    font-weight: bold;
+}
+.nav_link a{
+  color: white;
+}
+
+/* ★ 2번 해결: 종, 메일 아이콘을 감싸는 그룹 */
+.icon_group { 
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 종 아이콘과 메일 아이콘 사이의 간격 */
+    font-size: 1.5rem; /* 아이콘 크기 조절 */
+    color: #FAE7C3;
+}
+
+/* ★ 3번 해결: 프로필 이미지와 텍스트를 감싸는 그룹 */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 프로필 이미지와 텍스트 그룹 사이의 간격 */
+    cursor: pointer;
+}
+
+/* ★ 4번 해결: 프로필 이미지 */
+.profile_img {
+    width: 50px;   /* 크기 키움 */
+    height: 50px;  /* 크기 키움 */
+    border-radius: 50%;
+    background-color: white; /* 이미지가 없을 때를 대비 */
+    cursor: pointer;
+}
+
+/* 프로필 텍스트 그룹 */
+.text_group {
+    display:flex;
+    flex-direction: column;
+}
+
+/* 닉네임과 이름 스타일 */
+.user_nickname {
+    font-weight: bold;
+    font-size: 1rem;
+}
+.user_name {
+    font-size: 0.8rem;
+    color: #E0E0E0; /* 이름은 약간 연한 색으로 */
+}
+
+.panelWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logoutbtn{
+  margin-right: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.fabell, .fimail {
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
+/* 아이콘 wrapper (badge 위치 지정용) */
+.icon_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* 빨간 뱃지 (숫자 표시) */
+.badge {
+  position: absolute;
+  bottom: 5px;
+  right: -5px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 5px;
+  background-color: red;
+  border-radius: 9px;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.commentDrop, .chatDrop {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #FAE7C3;
+  border: 1px solid #C85C3C;
+  z-index: 100;
+  width: max-content;
+  padding: 15px;
+  border-radius: 13px;
+  min-width: 13vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdown_title{
+  text-align: center;
+  color: black;
+  border-bottom: 1px #C85C3C solid;
+  font-weight: 600;
+  font-size: clamp(0.3rem, calc(1rem + 0.2vw), 2rem);
+  width: 100%;
+}
+
+.commentContainer{
+  width: 100%;
+}
+.chatContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdown_delete_box{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100px;
+}
+.dropdown_item{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  position: relative;
+  color: black;
+  cursor: pointer;
+}
+.dropdown_comment_item{
+  display: flex;
+  flex-direction: column;
+  margin: 20px 10px;
+  position: relative;
+  color: black;
+  cursor: pointer;
+}
+
+.dropdown_trashbin{
+  font-size: 30px;
+  color: black;
+  cursor: pointer;
+  background-color: #FAE7C3;
+  text-align: right;
+  border: 2px black solid;
+}
+
+.clickarea{
+  color: black;;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  position:absolute;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+.icon{
+  font-size: clamp(0.3rem, calc(1rem + 0.6vw), 4rem);
+}
+
+.modal_overlay{
+    position: fixed;
+    inset: 0; 
+    background-color: rgba(0, 0, 0, 0.75);
+    /* 내용물(베이지색 박스)을 중앙에 배치 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 다른 요소들보다 위에 보이도록 z-index를 높게 설정 */
+    z-index: 1000;
+}
+.modal_container{
+  background-color: none;
+}
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FAE7C3;
+    font-size: 14px;
+}

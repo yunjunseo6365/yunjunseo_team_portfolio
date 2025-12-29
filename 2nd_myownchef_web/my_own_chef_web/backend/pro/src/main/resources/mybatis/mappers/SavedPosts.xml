@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.savedposts">
+
+    <!-- SavedPostsVO ResultMap -->
+    <resultMap id="SavedPostsResultMap" type="com.moc.pro.savedposts.vo.SavedPostsVO">
+        <id property="savedPostId" column="SAVED_POST_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="boardType" column="BOARD_TYPE"/>
+        <result property="postId" column="POST_ID"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+    </resultMap>
+
+    <!-- 게시글 저장 -->
+    <insert id="insertSavedPost" parameterType="com.moc.pro.savedposts.vo.SavedPostsVO">
+        INSERT INTO TB_SAVED_POSTS (
+            USER_ID,
+            BOARD_TYPE,
+            POST_ID,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{userId},
+            #{boardType},
+            #{postId},
+            SYSTIMESTAMP,
+            #{userId}
+        )
+    </insert>
+
+    <!-- 게시글 저장 취소 -->
+    <delete id="deleteSavedPost" parameterType="map">
+        DELETE FROM TB_SAVED_POSTS
+        WHERE USER_ID = #{userId}
+          AND BOARD_TYPE = #{boardType}
+          AND POST_ID = #{postId}
+    </delete>
+
+    <!-- 저장 여부 확인 -->
+    <select id="checkSavedPost" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_SAVED_POSTS
+        WHERE USER_ID = #{userId}
+          AND BOARD_TYPE = #{boardType}
+          AND POST_ID = #{postId}
+    </select>
+
+</mapper>

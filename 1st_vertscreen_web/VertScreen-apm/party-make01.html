@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마커 클릭 정보 표시</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./party-make01.css">
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=pq3dgwzbry"></script>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./advertisement.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!--header end-->
+
+  <!-- 네이버 맵 화면, 캘린더-->
+  <div class="map-and-calendar">
+    <div id="map"></div>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- 맵 선택 및 확대 용 인덱스들-->
+  <section class="locations">
+      <div class="location-grid">
+        <a href="#" data-lat="37.498095" data-lng="127.027610"><div class="location-card">강남역</div></a>
+        <a href="#" data-lat="37.55734" data-lng="126.92572"><div class="location-card">홍대입구역</div></a>
+        <a href="#" data-lat="37.513505" data-lng="127.102150"><div class="location-card">잠실역</div></a>
+        <a href="#" data-lat="37.554722" data-lng="126.971433"><div class="location-card">서울역</div></a>
+        <a href="#" data-lat="37.476538" data-lng="126.981544"><div class="location-card">사당역</div></a>
+        <a href="#" data-lat="37.540408" data-lng="127.070841"><div class="location-card">건대입구역</div></a>
+      </div>
+    </section>
+
+  <!-- 네이버 맵 상세 -->
+  <div id="info-box">
+    <img id="info-img" src="" alt="이미지">
+    <div class="info-text-wrap">
+      <p id="info-poster">광고판명 : -</p>
+      <p id="info-text">설명 : -</p>
+      <p id="info-amount">가격 : -</p>
+    </div>
+  </div>
+  <br>
+  
+  <!-- 파티 구성 인원 수 선택(금액 분할) -->
+    <h2>파티 구성 인원 수 선택(금액 분할)</h2>
+    <div class="select-amount-description">
+      <!-- 1/ n 분할 + 인원 수 설정-->
+      <div id="n-description">
+        <div name="contact"><strong>1 / n 분할 + 인원 수 설정을 진행합니다.</strong></div>
+        <p>설정 인원수를 입력하시면 입력한 인원 수 만큼 1 / n 분할로 금액을 결제하도록 합니다. <br>
+        목표 인원 수 만큼의 금액 달성 후 이벤트가 진행됩니다.</p>
+      <div id="setcount"><strong>인원 수 설정  </strong><input type="number" name="headcount" id="headcount" min="0" value="" placeholder="위 맵에서 광고 장소를 선택해주세요" disabled/></div>
+      <span id="info-peramount"><p>1인당 예상 결제 금액 : <span class="per-amount"></span></p></span>
+    </div>
+    </div>
+
+  <br>
+
+  <!--  파티 구성을 위한 이미지 업로드 및 내용-->
+    <div>
+    <h2>파티 구성을 위한 이미지 업로드 및 내용</h2>
+    <div class="party-ad">
+      <div>
+        <img id="imagePreview" src="./no_image.png" alt=""><br><br>
+        <label for="imageInput" class="custom-file-button">이미지 선택</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <p style="color: red;">※ 첨부된 이미지 파일로 심의 및 광고 이벤트가 진행됩니다.</p>
+      </div>
+      <div class="info-text-wrap">
+        <textarea id="textTitle" placeholder="제목을 입력하세요."></textarea>
+        <textarea id="textInput" placeholder="내용을 입력하세요."></textarea>
+      </div>
+    </div>
+    </div>
+    
+  <!-- 파티 구성 / 취소 버튼 -->
+  <div class="pnc-btn">
+    <button class="make-party" onclick="signup()">파티 구성</button>
+    <a href="/party-board.html"><button class="cancel">돌아가기</button></a>
+  </div>
+
+  <!--footer start-->
+  <footer>
+    <div></div>
+    <div></div>
+  </footer>
+  <!--footer end-->
+
+<script>
+  //로그인 프로필 설정
+  const profile = document.getElementById("profile");
+  const dropdown = document.getElementById("dropdown");
+  const authArea = document.getElementById("authArea");
+
+  profile.addEventListener("click", () => {
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  });
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+      window.location.href = "vertscreen_main.html";
+    }
+    
+    window.addEventListener("click", (e) => {
+      if (!profile.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    window.onload = () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      authArea.style.display = "none";
+      profile.style.display = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+    }
+
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
+    ];
+
+    protectedLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        if (!currentUser) {
+          e.preventDefault(); // 기본 이동 막기
+          alert("로그인이 필요합니다.");
+          window.location.href = "login.html"; // 로그인 페이지로 이동
+        }
+      });
+    });
+  };
+
+  /* 맵의 초기값 */
+  const map = new naver.maps.Map('map', {
+    center: new naver.maps.LatLng(37.498095, 127.027610),
+    zoom: 17
+  });
+  
+  /* 맵의 핀에 따른 정보 입력 */
+  let selectedNumber = null;
+  const markerData = [
+    {
+      position: new naver.maps.LatLng(37.497762, 127.027726),
+      image: './party-make-image/강남/강남_사각기둥1.jpg',
+      poster: '강남역-사각기둥1',
+      text: '유동인구가 많은 강남역의 사각기둥입니다.',
+      number: 1700000
+    },
+    {
+      position: new naver.maps.LatLng(37.497684, 127.026720),
+      image: './party-make-image/강남/강남_와이드칼라1.jpg',
+      poster: '강남역-와이드칼라1',
+      text: '유동인구가 많은 강남역의 와이드칼라입니다.',
+      number: 3300000
+    },
+    {
+      position: new naver.maps.LatLng(37.498084, 127.028417),
+      image: './party-make-image/강남/강남_와이드칼라2.jpg',
+      poster: '강남역-와이드칼라2',
+      text: '유동인구가 많은 강남역의 와이드칼라입니다.',
+      number: 3300000
+    },
+    {
+      position: new naver.maps.LatLng(37.497884, 127.027720),
+      image: './party-make-image/강남/강남_사각기둥2.png',
+      poster: '강남역-사각기둥2',
+      text: '유동인구가 많은 통로지역의 사각기둥입니다. ',
+      number: 1200000
+    },
+    {
+      position: new naver.maps.LatLng(37.498050, 127.027065),
+      image: './party-make-image/강남/강남_디포2.png',
+      poster: '강남역-디지털 포스터2',
+      text: '유동인구가 많은 역 입구의 디지털 포스터입니다. ',
+      number: 1100000
+    },
+    {
+      position: new naver.maps.LatLng(37.556940, 126.92374),
+      image: './party-make-image/홍대입구/홍대입구_디포1.jpg',
+      poster: '홍대입구역-디지털 포스터1',
+      text: '유동인구가 많은 역 입구의 디지털 포스터입니다. ',
+      number: 800000
+    },
+    {
+      position: new naver.maps.LatLng(37.556940, 126.92774),
+      image: './party-make-image/홍대입구/홍대입구_와이드칼라1.jpg',
+      poster: '홍대입구역-와이드칼라1',
+      text: '공항철도가 지나가는 홍대입구역의 와이드칼라입니다. ',
+      number: 4500000
+    },
+    {
+      position: new naver.maps.LatLng(37.557482, 126.924600),
+      image: './party-make-image/홍대입구/홍대입구_사각기둥1.jpg',
+      poster: '홍대입구역-사각기둥1',
+      text: '2호선 홍대입구역의 사각기둥입니다. ',
+      number: 1200000
+    },
+    {
+      position: new naver.maps.LatLng(37.513505, 127.101032),
+      image: './party-make-image/잠실역/잠실역_사각기둥1.jpg',
+      poster: '잠실역-사각기둥1',
+      text: '2호선 잠실역의 사각기둥입니다. ',
+      number: 1500000
+    },
+    {
+      position: new naver.maps.LatLng(37.513305, 127.100232),
+      image: './party-make-image/잠실역/잠실역_와이드칼라1.jpg',
+      poster: '잠실역-와이드칼라1',
+      text: '2호선 잠실역의 와이드칼라입니다. ',
+      number: 4200000
+    },
+    {
+      position: new naver.maps.LatLng(37.514455, 127.104572),
+      image: './party-make-image/잠실역/잠실역_와이드칼라2.jpg',
+      poster: '잠실역-와이드칼라2',
+      text: '8호선 잠실역의 와이드칼라입니다. ',
+      number: 3800000
+    },
+    {
+      position: new naver.maps.LatLng(37.514455, 127.103872),
+      image: './party-make-image/잠실역/잠실역_와이드칼라3.jpg',
+      poster: '잠실역-와이드칼라3',
+      text: '8호선 잠실역의 와이드칼라입니다. ',
+      number: 3800000
+    },
+    {
+      position: new naver.maps.LatLng(37.555002, 126.971682),
+      image: './party-make-image/서울역/서울역_디포1.jpg',
+      poster: '서울역_디지털 포스터1',
+      text: '1호선 서울역의 디지털 포스터입니다. ',
+      number: 1800000
+    },
+    {
+      position: new naver.maps.LatLng(37.553502, 126.969782),
+      image: './party-make-image/서울역/서울역_디포2.jpg',
+      poster: '서울역_디지털 포스터2',
+      text: '공항철도 서울역의 디지털 포스터입니다. ',
+      number: 2000000
+    },
+    {
+      position: new naver.maps.LatLng(37.553802, 126.969782),
+      image: './party-make-image/서울역/서울역_와이드칼라1.jpg',
+      poster: '공항철도 서울역_와이드칼라1',
+      text: '공항철도 서울역의 와이드칼라입니다. ',
+      number: 6500000
+    },
+    {
+      position: new naver.maps.LatLng(37.554902, 126.972182),
+      image: './party-make-image/서울역/서울역_와이드칼라2.jpg',
+      poster: '서울역_와이드칼라2',
+      text: '서울역의 와이드칼라입니다. ',
+      number: 6000000
+    },
+    {
+      position: new naver.maps.LatLng(37.554152, 126.973192),
+      image: './party-make-image/서울역/서울역_사각기둥1.jpg',
+      poster: '서울역_사각기둥1',
+      text: '4호선 서울역의 사각기둥입니다. ',
+      number: 2500000
+    },
+    {
+      position: new naver.maps.LatLng(37.476738, 126.982184),
+      image: './party-make-image/사당역/사당역_디포1.jpg',
+      poster: '사당역_디지털 포스터1',
+      text: '2호선 사당역의 디지털 포스터입니다. ',
+      number: 1200000
+    },
+    {
+      position: new naver.maps.LatLng(37.476138, 126.982184),
+      image: './party-make-image/사당역/사당역_와이드칼라1.jpg',
+      poster: '사당역_와이드칼라1',
+      text: '2호선 사당역의 와이드칼라입니다. ',
+      number: 5000000
+    },
+    {
+      position: new naver.maps.LatLng(37.476838, 126.981716),
+      image: './party-make-image/사당역/사당역_와이드칼라2.jpg',
+      poster: '사당역_와이드칼라2',
+      text: '4호선 사당역의 와이드칼라입니다. ',
+      number: 5500000
+    },
+    {
+      position: new naver.maps.LatLng(37.475738, 126.981716),
+      image: './party-make-image/사당역/사당역_사각기둥1.png',
+      poster: '사당역_사각기둥1',
+      text: '4호선 사당역의 사각기둥입니다. ',
+      number: 1500000
+    },
+    {
+      position: new naver.maps.LatLng(37.540108, 127.070120),
+      image: './party-make-image/건대입구역/건대입구역_사각기둥1.jpg',
+      poster: '건대입구역_사각기둥1',
+      text: '2호선 건대입구역의 사각기둥입니다. ',
+      number: 1100000
+    },
+    {
+      position: new naver.maps.LatLng(37.540708, 127.068712),
+      image: './party-make-image/건대입구역/건대입구역_와이드칼라1.jpg',
+      poster: '건대입구역_와이드칼라1',
+      text: '2호선 건대입구역의 와이드칼라입니다. ',
+      number: 1100000
+    },
+    {
+      position: new naver.maps.LatLng(37.540408, 127.070841),
+      image: './party-make-image/건대입구역/건대입구역_사각기둥2.jpg',
+      poster: '건대입구역_사각기둥2',
+      text: '7호선 건대입구역의 사각기둥입니다. ',
+      number: 900000
+    }
+  ];
+
+  /* location-card 클릭 이벤트 처리 */
+  document.querySelectorAll(".location-grid a").forEach(link => {
+    link.addEventListener("click", e => {
+
+      const lat = parseFloat(link.getAttribute("data-lat"));
+      const lng = parseFloat(link.getAttribute("data-lng"));
+
+      // 지도 중심 이동 + 줌 조정
+      map.setCenter(new naver.maps.LatLng(lat, lng));
+      map.setZoom(17);
+    });
+  });
+
+  /* Calendar */
+  let selectedDate = null;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    let selectedEvents = [];
+
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'ko',
+    selectable: true,
+    dateClick: function(info) {
+      if (selectedDate === info.dateStr) {
+        selectedEvents.forEach(event => event.remove());
+        selectedEvents = [];
+        selectedDate = null;
+        return;
+      }
+
+      if (selectedEvents.length > 0) {
+        selectedEvents.forEach(event => event.remove());
+        selectedEvents = [];
+      }
+
+      selectedDate = info.dateStr; // 선택된 날짜 저장
+
+      const newEvent = calendar.addEvent({
+        title: '선택됨',
+        start: info.dateStr,
+        allDay: true
+      });
+
+      selectedEvents.push(newEvent);
+    }
+  });
+
+  calendar.render();
+});
+
+
+  /* 파티 구성 방식 로직 */
+  markerData.forEach(data => {
+    const marker = new naver.maps.Marker({
+      position: data.position,
+      map: map
+    });
+    naver.maps.Event.addListener(marker, 'click', () => {
+        document.getElementById('info-box').style.display = 'flex';
+        // 인원수 입력 0으로 초기화
+        document.getElementById('headcount').value = 0
+        document.getElementById('info-img').src = data.image;
+        document.getElementById('info-poster').textContent = `광고판명: ${data.poster}`;
+        document.getElementById('info-text').textContent = `설명: ${data.text}`;
+        document.getElementById('info-amount').textContent = `가격: ${data.number.toLocaleString()} 원`;
+        
+        selectedNumber = data.number;
+        selectedMarkerLat = data.position.lat();
+        selectedMarkerLng = data.position.lng();
+
+        // 인원수 입력란 활성화
+        document.getElementById('headcount').disabled = false;
+        document.getElementById('headcount').placeholder = "";
+        console.log('선택된 숫자:', selectedNumber);
+      });
+  });
+
+
+  /* (1 / n) 분할 + 설정된 인원수 대로 1인 예상 결제액 표시 */
+  const perAmountSpan = document.querySelector('.per-amount');
+  const headcountInput = document.getElementById('headcount');
+  const setcount = document.getElementById('setcount');
+
+  headcountInput.addEventListener('input', () => {
+    if (selectedNumber && headcountInput.value > 0) {
+      const perAmount = Math.floor(selectedNumber / headcountInput.value);
+      perAmountSpan.textContent = perAmount.toLocaleString() + " 원";
+    } else {
+      perAmountSpan.textContent = "-";
+    }
+  });
+
+  /* 유저가 업로드한 이미지 실시간 표시 */
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      document.getElementById('imagePreview').src = e.target.result;
+    };
+
+    if (file) {
+      reader.readAsDataURL(file); // 이미지 파일을 Base64로 변환
+    }
+  });
+
+/* 파티 구성 -> 페이지 정보 저장해서 데이터 전송 */
+/* signup 함수 */
+  function signup(){
+    // 필수값 입력
+    if (!selectedNumber) {
+      alert("광고 위치(맵)를 선택해주세요.");
+      document.getElementById("map").scrollIntoView();
+      return;
+    }
+    if (!selectedDate) {
+      alert("날짜를 선택해주세요.");
+      document.getElementById("calendar").scrollIntoView();
+      return;
+    }
+    if (!document.getElementById("textTitle").value.trim()) {
+      alert("제목을 입력해주세요.");
+      document.getElementById("textTitle").focus();
+      return;
+    }
+    if (!document.getElementById("textInput").value.trim()) {
+      alert("내용을 입력해주세요.");
+      document.getElementById("textInput").focus();
+      return;
+    }
+    if (document.getElementById("imagePreview").src.includes("no_image.png")) {
+      alert("이미지를 업로드해주세요.");
+      document.getElementById("imageInput").click();
+      return;
+    }
+    if (!document.getElementById("headcount").value || document.getElementById("headcount").value <= 0) {
+        alert("인원수를 입력해주세요.");
+        document.getElementById("headcount").focus();
+        return;
+    }
+
+  const currentUser = localStorage.getItem("currentUser");
+  if (!currentUser) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
+  const data = {
+    lat: selectedMarkerLat,
+    lng: selectedMarkerLng,
+    mapImg: document.getElementById("info-img").src,
+    poster: document.getElementById("info-poster").textContent.replace("광고판명: ", ""),
+    text: document.getElementById("info-text").textContent.replace("설명: ", ""),
+    amount: selectedNumber,
+    date: selectedDate,
+    headcount: parseInt(document.getElementById("headcount").value, 10),
+    perAmount: document.querySelector(".per-amount").textContent,
+    uploadImg: document.getElementById("imagePreview").src,
+    title: document.getElementById("textTitle").value,
+    content: document.getElementById("textInput").value,
+    createdAt: new Date().toISOString(),
+    author: currentUser,
+    participants: [currentUser] // 작성자 본인 기본 참여
+  };
+
+  let partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+  partyList.unshift(data);
+  if (partyList.length > 6) partyList = partyList.slice(0, 6);
+
+  localStorage.setItem("partyList", JSON.stringify(partyList));
+
+  // 방금 작성한 글을 선택 상태로 저장
+  localStorage.setItem("selectedParty", JSON.stringify(data));
+
+  window.location.href = "party-detail.html";
+  }
+</script>
+</body>
+
+</html>
+
+

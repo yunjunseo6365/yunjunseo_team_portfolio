@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>광고 제안 상세</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="./advertisement_detail.css">
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=YOUR_API_KEY"></script>
+</head>
+
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="naver-map-section">
+      <!-- 주소 부분 -->
+      <div class="address-box">
+        <h2>주소</h2>
+        <p id="detailAddress"></p>
+      </div>
+
+      <!-- 지도 -->
+      <div id="map"></div>
+
+      <!-- 이미지 + 금액 -->
+      <div class="map-and-calendar">
+        <div class="image-box">
+          <h3>이미지 샘플</h3>
+          <img id="detailImg" alt="업로드 이미지">
+        </div>
+        <div class="amount-box">
+          <h3>광고 금액</h3>
+          <p id="detailAmount"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 광고 제안 내용 -->
+    <section style="margin-top:30px;">
+      <h3>광고 제안 내용</h3>
+      <div style="background:#f1f5f9; padding:20px; border-radius:8px;">
+        <h4 id="detailTitle" style="margin-bottom:10px;"></h4>
+        <p id="detailContent"></p>
+      </div>
+    </section>
+
+    <!-- ⑤ 문의하기 + ⑥ 취소 -->
+    <div class="pnc-btn" style="margin-top:30px;">
+      <a href="./vertscreen_main.html" id="inquiryBtn">
+        <button class="make-party" onclick="alert('이메일이 전송되었습니다')">문의하기</button>
+      </a>
+      <button class="cancel" onclick="window.location.href='listTest.html'">돌아가기</button>
+    </div>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const ad = JSON.parse(localStorage.getItem("selectedAd"));
+      if (!ad) {
+        alert("선택된 광고 데이터가 없습니다.");
+        return;
+      }
+      document.getElementById("detailImg").src = ad.uploadImg || "./no_image.png";
+      document.getElementById("detailAmount").textContent = ad.amount.toLocaleString();
+      document.getElementById("detailContent").textContent = ad.content;
+      document.getElementById("detailAddress").textContent = ad.address || "주소 정보 없음";
+    });
+
+    (function () {
+      const authArea = document.getElementById("authArea");
+      const profile = document.getElementById("profile");
+      const dropdown = document.getElementById("dropdown");
+
+      function logout() {
+        localStorage.removeItem("currentUser");
+        location.reload();
+      }
+      window.logout = logout;
+
+      if (profile && dropdown) {
+        profile.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+        window.addEventListener("click", (e) => {
+          if (!profile.contains(e.target)) dropdown.style.display = "none";
+        });
+      }
+
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser && authArea && profile) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
+      }
+
+      // 문의하기 버튼 보호
+      const inquiryBtn = document.getElementById("inquiryBtn");
+      if (inquiryBtn) {
+        inquiryBtn.addEventListener("click", (e) => {
+          const u = localStorage.getItem("currentUser");
+          if (!u) {
+            e.preventDefault();
+            alert("로그인이 필요합니다.");
+            location.href = "login.html";
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>

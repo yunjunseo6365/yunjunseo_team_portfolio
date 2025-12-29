@@ -1,0 +1,147 @@
+/* ===== 제목 h2 ===== */
+h2 {
+  margin: 0 20px;
+  text-align: center;
+}
+
+/* 주소 박스 중앙 정렬 및 강조 */
+#naver-map-section .address-box {
+  text-align: center;
+  margin-bottom: 20px; /* 이미지/금액과 간격 확보 */
+}
+
+#naver-map-section .address-box p {
+  margin-top: 5px;
+  font-weight: 900;      /* 굵게 강조 */
+  font-size: 20px;       /* 약간 크게 */
+  color: #38BDF8;        /* 포인트 컬러 */
+}
+
+/* 이미지 + 금액 박스 */
+.map-and-calendar {
+  display: flex;
+  justify-content: center; /* 양쪽 박스 중앙 정렬 */
+  gap: 40px;               /* 이미지와 광고 금액 박스 사이 간격 */
+  flex-wrap: wrap;          /* 작은 화면에서는 세로로 쌓이도록 */
+  margin-bottom: 5px !important;
+}
+
+/* 이미지 박스 */
+.map-and-calendar div:first-child {
+  flex-shrink: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  height: 300px;
+}
+
+.map-and-calendar div:first-child img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* 광고판 금액 박스 */
+.map-and-calendar div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* 중앙 정렬 */
+  align-items: center;
+  width: 500px; 
+  height: 300px;
+  padding: 25px 30px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: rgba(11,15,26,.82);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* 광고판 제목 */
+.map-and-calendar div:last-child h3 {
+  font-size: 28px;
+  font-weight: 900;
+  color: whitesmoke;
+  margin-bottom: 15px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 금액 텍스트 강조 */
+#detailAmount {
+  font-size: 50px;             /* 이전 70px → 50px */
+  font-weight: 900;            
+  color: #38BDF8;              
+  text-align: center;
+  margin: 0;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+  width: 100%;
+}
+
+/* 광고 제안 내용 */
+#detailTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: black;
+}
+
+#detailContent {
+  font-size: 16px;
+  line-height: 1.6;
+  color: black;
+}
+
+/* Party & Cancel Buttons */
+.pnc-btn {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.make-party, .cancel {
+  background: #38BDF8;
+  margin: 15px;
+  width: 300px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #dbeafe;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 50px;
+}
+
+.make-party:hover, .cancel:hover {
+  background: #38BDF8;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+}
+
+.make-party:active, .cancel:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+}
+
+/* 반응형: 작은 화면에서는 세로로 쌓이도록 */
+@media (max-width: 1100px) {
+  .map-and-calendar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .map-and-calendar div:first-child,
+  .map-and-calendar div:last-child {
+    width: 90%;
+    max-width: 500px;
+  }
+}

@@ -1,0 +1,183 @@
+    :root{
+      --bg:#0b0f1a;        /* 배경 */
+      --panel:#111827;     /* 패널 배경 */
+      --line:#1e293b;      /* 경계선 */
+      --text:#ffffff;      /* 메인 텍스트 */
+      --muted:#94a3b8;     /* 보조 텍스트 */
+      --accent:#1DA1F2;    /* 포인트 (로고 블루) */
+      --accent-2:#38BDF8;  /* 서브 포인트 */
+      --shadow: 0 25px 80px rgba(0,0,0,.4);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+    height:100%;
+    margin:0;
+    }
+    body{
+      margin:0; color:var(--text);
+      font-family: Inter, "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(900px 500px at 100% 0%, rgba(29,161,242,.12), transparent 40%),
+        radial-gradient(700px 450px at 0% 100%, rgba(56,189,248,.10), transparent 45%),
+        var(--bg);
+    }
+    a{color:inherit; text-decoration:none}
+
+    .locations {
+    margin-top: 60px;
+  }
+
+  .locations h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.location-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.location-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text);
+  transition: all .25s ease;
+  cursor: pointer;
+}
+
+.location-card:hover {
+  border-color: var(--accent);
+  background: rgba(29,161,242,0.1);
+  transform: translateY(-3px);
+}
+
+    /* ===== Header ===== */
+    .site-header{
+      height: 120px;
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(11,15,26,.82), rgba(11,15,26,.55));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav-wrap{max-width:1200px; margin:0 auto; align-items:center; gap:18px; padding:16px 20px; justify-content: space-between; display:flex;}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.2px}
+    .brand img {
+        min-height: 100px;
+        height: 100px;        /* 로고 이미지 크게 */
+        width: auto;         /* 비율 유지 */
+        object-fit: contain;
+        }
+    .nav{display:flex; gap:14px; margin-left:18px}
+    .nav a{padding:10px 12px; border-radius:999px; border:1px solid transparent; font-weight:700; color:#dbeafe}
+    .nav a:hover{background:#0e1729; border-color:#22314b}
+    .spacer{flex:1}
+    .actions{display:flex; gap:10px}
+    .btn{appearance:none; border:1px solid #22314b; background:#0e1729; color:#dbeafe; padding:10px 14px; border-radius:999px; font-weight:800; cursor:pointer}
+    .btn.primary{background:var(--accent); color:#fff; border-color:transparent}
+    
+    /* 프로필 드롭다운 */
+    .profile { position:relative; display:none; align-items:center; cursor:pointer; }
+    .avatar { width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; }
+    .dropdown { display:none; position:absolute; top:48px; right:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; min-width:140px; box-shadow: var(--shadow);}
+    .dropdown a, .dropdown button { display:block; width:100%; padding:12px; background:none; border:none; color:var(--text); text-align:left; cursor:pointer; font-size:14px; }
+    .dropdown a:hover, .dropdown button:hover { background:#22314b; }
+    /* ===== Main ===== */
+    main{max-width:1200px; margin:0 auto; padding:28px 20px 80px}
+
+    /* Ad Screen (16:9) */
+    /* 슬라이드 영역 */
+    .screen {
+      position: relative;
+      width: 100%;          /* 화면 가로 90% 차지 */
+      height: 700px;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      background-size: cover;
+      background-position: center;
+      animation: slideShow 18s infinite;
+      /* 안의 텍스트 크기까지 비율에 맞춰 반응형으로 */
+      font-size: clamp(1rem, 5vw, 3rem); 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      }
+      .screen .headline .accent {
+      color: #38BDF8; /* 하늘색으로 강조 */
+      }
+
+    /* 슬라이드 이미지 (배경 순환) */
+    @keyframes slideShow {
+      0%   { background-image: url("./디지털포스터 광고3.jfif"); }
+      25%  { background-image: url("./디지털포스터\ 광고2.jpg"); }
+      50%  { background-image: url("./와이드칼라광고2.jpg"); }
+      75%  { background-image: url("./와이드칼라광고3.jpg"); }
+      100% { background-image: url("./사각기둥\ 광고3.png"); }
+    }
+    /* 텍스트 */
+    .screen .headline {
+      position: absolute;
+      bottom: 30px;   /* 화면 하단에서 30px 위 */
+      left: 40px;
+      z-index: 2;
+    }
+
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3); /* 어두운 오버레이 */
+      z-index: 1;
+    }
+
+      .station-info {
+      width: 100%;
+      overflow: hidden;
+      background: var(--panel);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 0;
+      margin-top: 40px;
+    }
+
+      .scroll-text {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-2);
+      padding-left: 100%;
+      animation: scroll-left 10s linear infinite;
+    }
+
+      @keyframes scroll-left {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+
+    /* ===== Footer ===== */
+    footer{margin-top:48px; border-top:1px solid rgba(255,255,255,.08); padding:28px 5px 5px 60px; text-align:left; color:var(--muted)};

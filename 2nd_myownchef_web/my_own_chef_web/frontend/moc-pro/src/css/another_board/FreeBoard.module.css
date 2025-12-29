@@ -1,0 +1,125 @@
+.bodydiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 15px;
+}
+.titlediv{
+    width: 100%;
+    font-size: 180%;
+    color: white;
+    border-bottom: 1px #FAE7C3 solid;
+    padding: 15px 0px;
+}
+.searchdiv{
+    margin-top: 15px;
+    background-color: #FAE7C3;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    border-radius: 10px;
+    justify-content: center;
+    width: 100%;
+}
+.search_text{
+    font-size: 130%;
+    width: 10%;
+    text-align: center;
+}
+.searchdiv form{
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+.searchdiv input[type="text"]{
+    width: 70%;
+    padding: 13px;
+    font-size: 110%;
+}
+.searchdiv button{
+    border: none;
+    color: white;
+    padding: 13px 50px;
+    font-size: 120%;
+    background-color: #C85C3C;
+    cursor: pointer;
+    width: 20%;
+}
+.boarddiv{
+    background-color: #FAE7C3;
+    margin-top: 20px;
+    border-radius: 10px;
+    min-height: 500px;
+    padding: 20px 10px;
+    position: relative;
+}
+.board_container{
+    display: grid;
+    grid-template-columns: 2fr 10fr 5fr 3fr;
+    width: 100%;
+}
+.boarditems_title{
+    background-color: #DDDFE1;
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px #cccccc solid;
+    font-size: 120%;
+}
+
+.boarditems_title_none{
+    background-color: #DDDFE1;
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border: none;
+    font-size: 120%;
+}
+.boarditems{
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px #cccccc solid;
+    font-size: 120%;
+    border-bottom: 1px #cccccc solid;
+}
+.boarditems_none{
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    font-size: 120%;
+    border-bottom: 1px #cccccc solid;
+}
+.bottomdiv{
+    height: 50px;
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    width: 58%;
+    left: 40%;
+    justify-content: space-between;
+}
+.bottomdiv button{
+    border: none;
+    padding: 8px 40px;
+    font-size: 120%;
+    color: white;
+    background-color: #C85C3C;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+}

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.report">
+
+    <!-- ReportVO ResultMap -->
+    <resultMap id="ReportResultMap" type="com.moc.pro.report.vo.ReportVO">
+        <id property="reportId" column="REPORT_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="reportType" column="REPORT_TYPE"/>
+        <result property="boardType" column="BOARD_TYPE"/>
+        <result property="targetId" column="TARGET_ID"/>
+        <result property="reportContent" column="REPORT_CONTENT"/>
+        <result property="reportStatus" column="REPORT_STATUS"/>
+        <result property="processedBy" column="PROCESSED_BY"/>
+        <result property="processedAt" column="PROCESSED_AT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+    </resultMap>
+
+    <!-- 신고 등록 -->
+    <insert id="insertReport" parameterType="com.moc.pro.report.vo.ReportVO">
+        INSERT INTO TB_REPORT (
+            USER_ID,
+            REPORT_TYPE,
+            BOARD_TYPE,
+            TARGET_ID,
+            REPORT_CONTENT,
+            REPORT_STATUS,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{userId},
+            #{reportType},
+            #{boardType},
+            #{targetId},
+            #{reportContent},
+            'OPEN',
+            SYSTIMESTAMP,
+            #{userId}
+        )
+    </insert>
+
+    <!-- 신고 여부 확인 (중복 방지) -->
+    <select id="checkReport" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_REPORT
+        WHERE USER_ID = #{userId}
+          AND REPORT_TYPE = #{reportType}
+          AND BOARD_TYPE = #{boardType}
+          AND TARGET_ID = #{targetId}
+    </select>
+
+    <!-- ========== 관리자용 신고 관리 쿼리 ========== -->
+    
+    <!-- AdminReportVO ResultMap -->
+    <resultMap id="AdminReportResultMap" type="com.moc.pro.report.vo.AdminReportVO">
+        <id property="reportId" column="reportId"/>
+        <result property="reporterNickname" column="reporterNickname"/>
+        <result property="targetTitle" column="targetTitle"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="targetId" column="targetId"/>
+        <result property="boardType" column="boardType"/>
+        <result property="reportContent" column="reportContent"/>
+        <result property="reportType" column="reportType"/>
+        <result property="reportStatus" column="reportStatus"/>
+    </resultMap>
+
+    <!-- 관리자용 신고 목록 조회 (복잡한 다중 LEFT JOIN) -->
+    <select id="selectAdminReports" parameterType="map" resultMap="AdminReportResultMap">
+        SELECT 
+            r.REPORT_ID as reportId,
+            u.USER_NICKNAME as reporterNickname,
+            CASE r.BOARD_TYPE
+                WHEN 'recipe' THEN rec.RECIPE_TITLE
+                WHEN 'freeboard' THEN fb.FREEBOARD_TITLE
+                WHEN 'sharetool' THEN st.SHARETOOL_TITLE
+                WHEN 'conv-review' THEN cr.CONV_REVIEW_TITLE
+                WHEN 'conv-recipe' THEN cc.CONV_COMB_TITLE
+                WHEN 'withshopping' THEN ws.WITHSHOPPING_TITLE
+                WHEN 'notice' THEN n.NOTICE_TITLE
+            END as targetTitle,
+            TO_CHAR(r.CREATED_AT, 'YYYY-MM-DD') as createdAt,
+            r.TARGET_ID as targetId,
+            r.BOARD_TYPE as boardType,
+            r.REPORT_CONTENT as reportContent,
+            r.REPORT_TYPE as reportType,
+            r.REPORT_STATUS as reportStatus
+        FROM TB_REPORT r
+        LEFT JOIN TB_USER u ON r.USER_ID = u.USER_ID
+        LEFT JOIN TB_RECIPE rec ON r.BOARD_TYPE = 'recipe' AND r.TARGET_ID = rec.RECIPE_ID
+        LEFT JOIN TB_FREEBOARD fb ON r.BOARD_TYPE = 'freeboard' AND r.TARGET_ID = fb.FREEBOARD_ID
+        LEFT JOIN TB_SHARETOOL st ON r.BOARD_TYPE = 'sharetool' AND r.TARGET_ID = st.SHARETOOL_ID
+        LEFT JOIN TB_CONV_REVIEW cr ON r.BOARD_TYPE = 'conv-review' AND r.TARGET_ID = cr.CONV_REVIEW_ID
+        LEFT JOIN TB_CONV_COMB cc ON r.BOARD_TYPE = 'conv-recipe' AND r.TARGET_ID = cc.CONV_COMB_ID
+        LEFT JOIN TB_WITHSHOPPING ws ON r.BOARD_TYPE = 'withshopping' AND r.TARGET_ID = ws.WITHSHOPPING_ID
+        LEFT JOIN TB_NOTICE n ON r.BOARD_TYPE = 'notice' AND r.TARGET_ID = n.NOTICE_ID
+        ORDER BY r.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 관리자용 신고 전체 개수 -->
+    <select id="selectAdminReportsTotalCount" resultType="int">
+        SELECT COUNT(*) FROM TB_REPORT
+    </select>
+
+    <!-- 관리자용 신고 상세 조회 -->
+    <select id="selectAdminReportById" parameterType="int" resultMap="AdminReportResultMap">
+        SELECT 
+            r.REPORT_ID as reportId,
+            u.USER_NICKNAME as reporterNickname,
+            CASE r.BOARD_TYPE
+                WHEN 'recipe' THEN rec.RECIPE_TITLE
+                WHEN 'freeboard' THEN fb.FREEBOARD_TITLE
+                WHEN 'sharetool' THEN st.SHARETOOL_TITLE
+                WHEN 'conv-review' THEN cr.CONV_REVIEW_TITLE
+                WHEN 'conv-recipe' THEN cc.CONV_COMB_TITLE
+                WHEN 'withshopping' THEN ws.WITHSHOPPING_TITLE
+                WHEN 'notice' THEN n.NOTICE_TITLE
+            END as targetTitle,
+            TO_CHAR(r.CREATED_AT, 'YYYY-MM-DD') as createdAt,
+            r.TARGET_ID as targetId,
+            r.BOARD_TYPE as boardType,
+            r.REPORT_CONTENT as reportContent,
+            r.REPORT_TYPE as reportType,
+            r.REPORT_STATUS as reportStatus
+        FROM TB_REPORT r
+        LEFT JOIN TB_USER u ON r.USER_ID = u.USER_ID
+        LEFT JOIN TB_RECIPE rec ON r.BOARD_TYPE = 'recipe' AND r.TARGET_ID = rec.RECIPE_ID
+        LEFT JOIN TB_FREEBOARD fb ON r.BOARD_TYPE = 'freeboard' AND r.TARGET_ID = fb.FREEBOARD_ID
+        LEFT JOIN TB_SHARETOOL st ON r.BOARD_TYPE = 'sharetool' AND r.TARGET_ID = st.SHARETOOL_ID
+        LEFT JOIN TB_CONV_REVIEW cr ON r.BOARD_TYPE = 'conv-review' AND r.TARGET_ID = cr.CONV_REVIEW_ID
+        LEFT JOIN TB_CONV_COMB cc ON r.BOARD_TYPE = 'conv-recipe' AND r.TARGET_ID = cc.CONV_COMB_ID
+        LEFT JOIN TB_WITHSHOPPING ws ON r.BOARD_TYPE = 'withshopping' AND r.TARGET_ID = ws.WITHSHOPPING_ID
+        LEFT JOIN TB_NOTICE n ON r.BOARD_TYPE = 'notice' AND r.TARGET_ID = n.NOTICE_ID
+        WHERE r.REPORT_ID = #{reportId}
+    </select>
+
+    <!-- 관리자용 신고 삭제 -->
+    <delete id="deleteReport" parameterType="int">
+        DELETE FROM TB_REPORT WHERE REPORT_ID = #{reportId}
+    </delete>
+
+</mapper>

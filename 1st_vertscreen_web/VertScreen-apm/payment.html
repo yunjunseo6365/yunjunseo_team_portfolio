@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 페이지</title>
+  <link rel="stylesheet" href="VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="payment.css">
+  <style>
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+    @keyframes fillWater {
+      from { width: 0; }
+      to { width: var(--target-width); }
+    }
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: 0% 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>결제 진행</h2>
+
+    <div class="info-box" id="payment-info"></div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">0%</span>
+        <span id="remain-text">남은 금액: 0 원</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <label for="payment-method">결제 수단</label>
+    <select id="payment-method">
+      <option value="card">신용/체크카드</option>
+      <option value="account">계좌이체</option>
+    </select>
+
+    <div id="payment-form"></div>
+
+    <button class="btn" onclick="completePayment()">결제하기</button>
+  </div>
+
+<script>
+let post = JSON.parse(localStorage.getItem("selectedParty"));
+let partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+let currentUser = localStorage.getItem("currentUser");
+
+if (!currentUser) {
+  alert("로그인이 필요합니다.");
+  window.location.href = "login.html";
+}
+if (!post) {
+  alert("선택된 파티가 없습니다.");
+  window.location.href = "party-board.html";
+}
+
+// 기본 결제 정보 계산
+let totalAmount = post.amount;
+let headcount = post.headcount;
+let perAmount = Math.floor(totalAmount / headcount);
+let paidCount = post.paidParticipants ? post.paidParticipants.length : 0;
+let paidAmount = perAmount * paidCount;
+let remainAmount = totalAmount - paidAmount;
+let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
+
+// UI 출력
+let infoBox = document.getElementById("payment-info");
+infoBox.innerHTML = `
+  <p><strong>광고판명 :</strong> ${post.poster}</p>
+  <p><strong>총 금액 :</strong> ${totalAmount.toLocaleString()} 원</p>
+  <p><strong>현재 참여 인원 :</strong> ${paidCount} 명</p>
+  <p><strong>참여 가능 인원 수 :</strong> ${headcount} 명</p>
+  <p><strong>1인당 결제 금액 :</strong>
+      <span style="color:var(--accent-2); font-weight:700;">
+        ${perAmount.toLocaleString()} 원
+      </span>
+    </p>
+`;
+
+// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 수정된 부분 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+const progressFill = document.getElementById("progress-fill");
+progressFill.style.setProperty('--target-width', `${progress}%`);
+// ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 수정된 부분 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+document.getElementById("progress-text").textContent = progress + "%";
+document.getElementById("remain-text").textContent = `남은 금액: ${remainAmount.toLocaleString()} 원`;
+
+// 결제 수단 폼
+const paymentMethod = document.getElementById("payment-method");
+const paymentForm = document.getElementById("payment-form");
+paymentMethod.addEventListener("change", updateForm);
+updateForm();
+
+// 결제 정보 입력
+function updateForm() {
+    let method = paymentMethod.value;
+    if (method === "card") {
+      paymentForm.innerHTML = `
+        <label>카드 번호</label>
+        <input type="text" id="card-number" placeholder="0000-0000-0000-0000" maxlength="19">
+        <label>유효기간</label>
+        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+        <label>CVC</label>
+        <input type="text" id="card-cvc" placeholder="123" maxlength="3">
+      `;
+    } else if (method === "account") {
+      paymentForm.innerHTML = `
+        <label>은행 선택</label>
+        <select>
+          <option>국민은행</option>
+          <option>신한은행</option>
+          <option>하나은행</option>
+          <option>우리은행</option>
+        </select>
+        <label>계좌번호</label>
+        <input type="text" placeholder="000-0000-0000">
+      `;
+    }
+  }
+// 결제 완료
+function completePayment() {
+  const selectedMethod = document.getElementById("payment-method").value;
+
+  if (selectedMethod === "card") {
+    const cardNumber = document.getElementById("card-number").value;
+    const cardExpiry = document.getElementById("card-expiry").value;
+    const cardCvc = document.getElementById("card-cvc").value;
+
+    if (!cardNumber || !cardExpiry || !cardCvc) {
+      alert("카드 번호, 유효기간, CVC를 모두 입력해주세요.");
+      return;
+    }
+  }
+  
+  if (!post.paidParticipants) {
+    post.paidParticipants = [];
+  }
+
+  if (!post.paidParticipants.includes(currentUser)) {
+    post.paidParticipants.push(currentUser);
+
+    // partyList 안에서도 갱신
+    partyList = partyList.map(p => p.createdAt === post.createdAt ? post : p);
+
+    localStorage.setItem("partyList", JSON.stringify(partyList));
+    localStorage.setItem("selectedParty", JSON.stringify(post));
+
+    alert("결제가 완료되었습니다! 파티 상세 페이지에서 확인하세요.");
+    window.location.href = "party-detail.html";
+  } else {
+    alert("이미 결제를 완료했습니다!");
+  }
+}
+</script>
+
+</body>
+</html>

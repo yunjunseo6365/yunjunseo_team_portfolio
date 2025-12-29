@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.mypage.dao.MyPageDAO">
+
+    <!-- ResultMap 정의 -->
+    <resultMap id="MyPagePostResultMap" type="com.moc.pro.mypage.vo.MyPagePostVO">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="boardType" column="boardType"/>
+        <result property="typeName" column="typeName"/>
+        <result property="createdDate" column="createdDate"/>
+    </resultMap>
+
+    <!-- 내가 쓴 글 목록 조회 (UNION ALL로 모든 게시판 통합) -->
+    <select id="selectMyPosts" parameterType="map" resultMap="MyPagePostResultMap">
+        SELECT * FROM (
+            SELECT 
+                RECIPE_ID as id, 
+                RECIPE_TITLE as title, 
+                'recipe' as boardType, 
+                '레시피' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_RECIPE 
+            WHERE USER_ID = #{userId}
+            
+            UNION ALL
+            
+            SELECT 
+                SHARETOOL_ID as id, 
+                SHARETOOL_TITLE as title, 
+                'sharetool' as boardType, 
+                '요리나눔' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_SHARETOOL 
+            WHERE USER_ID = #{userId}
+            
+            UNION ALL
+            
+            SELECT 
+                CONV_REVIEW_ID as id, 
+                CONV_REVIEW_TITLE as title, 
+                'conv-review' as boardType , 
+                '편의점리뷰' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_CONV_REVIEW 
+            WHERE USER_ID = #{userId}
+            
+            UNION ALL
+            
+            SELECT 
+                CONV_COMB_ID as id, 
+                CONV_COMB_TITLE as title, 
+                'conv-recipe' as boardType, 
+                '편의점조합' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_CONV_COMB 
+            WHERE USER_ID = #{userId}
+            
+            UNION ALL
+            
+            SELECT 
+                FREEBOARD_ID as id, 
+                FREEBOARD_TITLE as title, 
+                'freeboard' as boardType, 
+                '자유게시판' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_FREEBOARD 
+            WHERE USER_ID = #{userId}
+            
+            UNION ALL
+            
+            SELECT 
+                WITHSHOPPING_ID as id, 
+                WITHSHOPPING_TITLE as title, 
+                'withshopping' as boardType, 
+                '같이쇼핑' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_WITHSHOPPING 
+            WHERE USER_ID = #{userId}
+            
+            UNION ALL
+            
+            SELECT 
+                NOTICE_ID as id, 
+                NOTICE_TITLE as title, 
+                'notice' as boardType, 
+                '공지사항' as typeName, 
+                TO_CHAR(CREATED_AT, 'YYYY-MM-DD') as createdDate
+            FROM TB_NOTICE 
+            WHERE USER_ID = #{userId}
+        )
+        ORDER BY createdDate DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+    
+    <!-- 내가 쓴 글 전체 개수 -->
+    <select id="selectMyPostsTotalCount" parameterType="string" resultType="int">
+        SELECT (
+            (SELECT COUNT(*) FROM TB_RECIPE WHERE USER_ID = #{userId}) +
+            (SELECT COUNT(*) FROM TB_SHARETOOL WHERE USER_ID = #{userId}) +
+            (SELECT COUNT(*) FROM TB_CONV_REVIEW WHERE USER_ID = #{userId}) +
+            (SELECT COUNT(*) FROM TB_CONV_COMB WHERE USER_ID = #{userId}) +
+            (SELECT COUNT(*) FROM TB_FREEBOARD WHERE USER_ID = #{userId}) +
+            (SELECT COUNT(*) FROM TB_WITHSHOPPING WHERE USER_ID = #{userId}) +
+            (SELECT COUNT(*) FROM TB_NOTICE WHERE USER_ID = #{userId})
+        ) AS total 
+        FROM DUAL
+    </select>
+    
+    <!-- 저장한 글 목록 조회 (LEFT JOIN으로 각 게시판과 조인) -->
+    <select id="selectSavedPosts" parameterType="map" resultMap="MyPagePostResultMap">
+        SELECT 
+            sp.POST_ID as id,
+            sp.BOARD_TYPE as boardType,
+            CASE sp.BOARD_TYPE
+                WHEN 'recipe' THEN r.RECIPE_TITLE
+                WHEN 'sharetool' THEN st.SHARETOOL_TITLE
+                WHEN 'conv-review' THEN cr.CONV_REVIEW_TITLE
+                WHEN 'conv-recipe' THEN cc.CONV_COMB_TITLE
+                WHEN 'freeboard' THEN fb.FREEBOARD_TITLE
+            END as title,
+            CASE sp.BOARD_TYPE
+                WHEN 'recipe' THEN '레시피'
+                WHEN 'sharetool' THEN '요리나눔'
+                WHEN 'conv-review' THEN '편의점리뷰'
+                WHEN 'conv-recipe' THEN '편의점조합'
+                WHEN 'freeboard' THEN '자유게시판'
+            END as typeName,
+            TO_CHAR(sp.CREATED_AT, 'YYYY-MM-DD') as createdDate
+        FROM TB_SAVED_POSTS sp
+        LEFT JOIN TB_RECIPE r ON sp.BOARD_TYPE = 'recipe' AND sp.POST_ID = r.RECIPE_ID
+        LEFT JOIN TB_SHARETOOL st ON sp.BOARD_TYPE = 'sharetool' AND sp.POST_ID = st.SHARETOOL_ID
+        LEFT JOIN TB_CONV_REVIEW cr ON sp.BOARD_TYPE = 'conv-review' AND sp.POST_ID = cr.CONV_REVIEW_ID
+        LEFT JOIN TB_CONV_COMB cc ON sp.BOARD_TYPE = 'conv-recipe' AND sp.POST_ID = cc.CONV_COMB_ID
+        LEFT JOIN TB_FREEBOARD fb ON sp.BOARD_TYPE = 'freeboard' AND sp.POST_ID = fb.FREEBOARD_ID
+        WHERE sp.USER_ID = #{userId}
+        ORDER BY sp.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+    
+    <!-- 저장한 글 전체 개수 -->
+    <select id="selectSavedPostsTotalCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) 
+        FROM TB_SAVED_POSTS 
+        WHERE USER_ID = #{userId}
+    </select>
+
+</mapper>

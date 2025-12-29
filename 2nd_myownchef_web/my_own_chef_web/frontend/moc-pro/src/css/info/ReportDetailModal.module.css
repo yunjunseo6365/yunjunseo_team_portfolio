@@ -1,0 +1,82 @@
+/* 모달 컨테이너 */
+.modal_container {
+    display: flex;
+    width: 35vw;
+    min-height: 70vh;
+    height: 70vh;
+    padding: 25px 30px;
+    flex-direction: column;
+    background-color: #FAE7C3;
+    border-radius: 20px;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+/* 모달 헤더 */
+.modal_header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+    height: 10%;
+}
+
+.modal_title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0;
+    color: #383838;
+}
+
+/* 모달 콘텐츠 */
+.modal_content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 70%;
+}
+
+.report_info {
+    background-color: #FFF9F0;
+    border: 1px solid #D5A16F;
+    border-radius: 10px;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+}
+
+.report_text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #383838;
+    margin: 0;
+    word-break: keep-all;
+}
+
+/* 버튼 컨테이너 */
+.button_container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    
+}
+
+.modal_button {
+    padding: 12px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.confirm_button {
+    background-color: #C85C3C;
+    color: white;
+}
+
+.confirm_button:hover {
+    background-color: #b04a2c;
+}

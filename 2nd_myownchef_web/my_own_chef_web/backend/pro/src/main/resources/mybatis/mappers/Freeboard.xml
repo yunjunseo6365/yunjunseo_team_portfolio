@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.freeboard.dao.FreeboardDAO">
+    
+    <!-- FreeboardVO resultMap -->
+    <resultMap id="FreeboardResultMap" type="com.moc.pro.freeboard.vo.FreeboardVO">
+        <id property="freeboardId" column="FREEBOARD_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="freeboardTitle" column="FREEBOARD_TITLE"/>
+        <result property="freeboardContent" column="FREEBOARD_CONTENT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+    </resultMap>
+    
+    <!-- FreeboardCommentVO resultMap -->
+    <resultMap id="FreeboardCommentResultMap" type="com.moc.pro.freeboard.vo.FreeboardCommentVO">
+        <id property="freeboardCommentId" column="FREEBOARD_COMMENT_ID"/>
+        <result property="freeboardId" column="FREEBOARD_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="freeboardCommentContent" column="FREEBOARD_COMMENT_CONTENT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+    </resultMap>
+    
+    <!-- 자유게시판 목록 조회 (페이징) -->
+    <select id="selectList" parameterType="map" resultMap="FreeboardResultMap">
+        SELECT 
+            f.FREEBOARD_ID,
+            f.USER_ID,
+            f.FREEBOARD_TITLE,
+            f.FREEBOARD_CONTENT,
+            f.CREATED_AT,
+            f.CREATED_BY,
+            f.UPDATED_AT,
+            f.UPDATED_BY,
+            u.USER_NICKNAME
+        FROM TB_FREEBOARD f
+        LEFT JOIN TB_USER u ON f.USER_ID = u.USER_ID
+        ORDER BY f.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+    
+    <!-- 전체 게시글 수 -->
+    <select id="selectTotalCount" resultType="int">
+        SELECT COUNT(*) FROM TB_FREEBOARD
+    </select>
+    
+    <!-- 검색 (제목 + 내용) -->
+    <select id="searchByKeyword" parameterType="map" resultMap="FreeboardResultMap">
+        SELECT 
+            f.FREEBOARD_ID,
+            f.USER_ID,
+            f.FREEBOARD_TITLE,
+            f.FREEBOARD_CONTENT,
+            f.CREATED_AT,
+            f.CREATED_BY,
+            f.UPDATED_AT,
+            f.UPDATED_BY,
+            u.USER_NICKNAME
+        FROM TB_FREEBOARD f
+        LEFT JOIN TB_USER u ON f.USER_ID = u.USER_ID
+        WHERE f.FREEBOARD_TITLE LIKE '%' || #{keyword} || '%'
+           OR f.FREEBOARD_CONTENT LIKE '%' || #{keyword} || '%'
+        ORDER BY f.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+    
+    <!-- 검색 결과 수 -->
+    <select id="selectSearchCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) 
+        FROM TB_FREEBOARD
+        WHERE FREEBOARD_TITLE LIKE '%' || #{keyword} || '%'
+           OR FREEBOARD_CONTENT LIKE '%' || #{keyword} || '%'
+    </select>
+    
+    <!-- 상세 조회 -->
+    <select id="selectById" parameterType="int" resultMap="FreeboardResultMap">
+        SELECT 
+            f.FREEBOARD_ID,
+            f.USER_ID,
+            f.FREEBOARD_TITLE,
+            f.FREEBOARD_CONTENT,
+            f.CREATED_AT,
+            f.CREATED_BY,
+            f.UPDATED_AT,
+            f.UPDATED_BY,
+            u.USER_NICKNAME
+        FROM TB_FREEBOARD f
+        LEFT JOIN TB_USER u ON f.USER_ID = u.USER_ID
+        WHERE f.FREEBOARD_ID = #{freeboardId}
+    </select>
+    
+    <!-- 게시글 작성 -->
+    <insert id="insertFreeboard" parameterType="com.moc.pro.freeboard.vo.FreeboardVO">
+        INSERT INTO TB_FREEBOARD (
+            USER_ID,
+            FREEBOARD_TITLE,
+            FREEBOARD_CONTENT,
+            CREATED_BY
+        ) VALUES (
+            #{userId},
+            #{freeboardTitle},
+            #{freeboardContent},
+            #{userId}
+        )
+    </insert>
+    
+    <!-- 게시글 수정 -->
+    <update id="updateFreeboard" parameterType="com.moc.pro.freeboard.vo.FreeboardVO">
+        UPDATE TB_FREEBOARD
+        SET FREEBOARD_TITLE = #{freeboardTitle},
+            FREEBOARD_CONTENT = #{freeboardContent},
+            UPDATED_AT = SYSTIMESTAMP,
+            UPDATED_BY = #{userId}
+        WHERE FREEBOARD_ID = #{freeboardId}
+    </update>
+    
+    <!-- 게시글 삭제 -->
+    <delete id="deleteFreeboard" parameterType="int">
+        DELETE FROM TB_FREEBOARD
+        WHERE FREEBOARD_ID = #{freeboardId}
+    </delete>
+    
+    <!-- 작성자 확인 -->
+    <select id="checkAuthor" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_FREEBOARD
+        WHERE FREEBOARD_ID = #{freeboardId}
+          AND USER_ID = #{userId}
+    </select>
+    
+    <!-- ===== 댓글 관련 ===== -->
+    
+    <!-- 댓글 목록 조회 -->
+    <select id="selectCommentsByBoardId" parameterType="int" resultMap="FreeboardCommentResultMap">
+        SELECT 
+            c.FREEBOARD_COMMENT_ID,
+            c.FREEBOARD_ID,
+            c.USER_ID,
+            c.FREEBOARD_COMMENT_CONTENT,
+            c.CREATED_AT,
+            c.CREATED_BY,
+            c.UPDATED_AT,
+            c.UPDATED_BY,
+            u.USER_NICKNAME
+        FROM TB_FREEBOARD_COMMENT c
+        LEFT JOIN TB_USER u ON c.USER_ID = u.USER_ID
+        WHERE c.FREEBOARD_ID = #{freeboardId}
+        ORDER BY c.CREATED_AT ASC
+    </select>
+    
+    <!-- 댓글 작성 -->
+    <insert id="insertComment" parameterType="com.moc.pro.freeboard.vo.FreeboardCommentVO">
+        INSERT INTO TB_FREEBOARD_COMMENT (
+            FREEBOARD_ID,
+            USER_ID,
+            FREEBOARD_COMMENT_CONTENT,
+            CREATED_BY
+        ) VALUES (
+            #{freeboardId},
+            #{userId},
+            #{freeboardCommentContent},
+            #{userId}
+        )
+    </insert>
+    
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment" parameterType="int">
+        DELETE FROM TB_FREEBOARD_COMMENT
+        WHERE FREEBOARD_COMMENT_ID = #{commentId}
+    </delete>
+    
+    <!-- 댓글 작성자 확인 -->
+    <select id="checkCommentAuthor" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_FREEBOARD_COMMENT
+        WHERE FREEBOARD_COMMENT_ID = #{commentId}
+          AND USER_ID = #{userId}
+    </select>
+    
+</mapper>

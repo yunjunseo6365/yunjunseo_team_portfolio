@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moc.pro.withshopping.WithShoppingMapper">
+
+    <!-- WithShoppingVO ResultMap -->
+    <resultMap id="WithShoppingResultMap" type="com.moc.pro.withshopping.vo.WithShoppingVO">
+        <id property="withShoppingId" column="WITHSHOPPING_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="withShoppingTitle" column="WITHSHOPPING_TITLE"/>
+        <result property="withShoppingContent" column="WITHSHOPPING_CONTENT"/>
+        <result property="withShoppingStatus" column="WITHSHOPPING_STATUS"/>
+        <result property="withShoppingSi" column="WITHSHOPPING_SI"/>
+        <result property="withShoppingGu" column="WITHSHOPPING_GU"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="updatedBy" column="UPDATED_BY"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+    </resultMap>
+
+    <!-- ===== 같이쇼핑 게시글 ===== -->
+
+    <!-- 목록 조회 (지역 + 상태 필터, 페이징) -->
+    <select id="selectList" parameterType="map" resultMap="WithShoppingResultMap">
+        SELECT 
+            ws.WITHSHOPPING_ID,
+            ws.USER_ID,
+            ws.WITHSHOPPING_TITLE,
+            ws.WITHSHOPPING_STATUS,
+            ws.WITHSHOPPING_SI,
+            ws.WITHSHOPPING_GU,
+            ws.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_WITHSHOPPING ws
+        LEFT JOIN TB_USER u ON ws.USER_ID = u.USER_ID
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND ws.WITHSHOPPING_STATUS != 'DELETED'
+            <if test="si != null and si != ''">
+                AND ws.WITHSHOPPING_SI = #{si}
+            </if>
+            <if test="gu != null and gu != ''">
+                AND ws.WITHSHOPPING_GU = #{gu}
+            </if>
+            <if test="status != null and status != ''">
+                AND ws.WITHSHOPPING_STATUS = #{status}
+            </if>
+        </where>
+        ORDER BY ws.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 전체 개수 (필터 포함) -->
+    <select id="selectTotalCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_WITHSHOPPING
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND WITHSHOPPING_STATUS != 'DELETED'
+            <if test="si != null and si != ''">
+                AND WITHSHOPPING_SI = #{si}
+            </if>
+            <if test="gu != null and gu != ''">
+                AND WITHSHOPPING_GU = #{gu}
+            </if>
+            <if test="status != null and status != ''">
+                AND WITHSHOPPING_STATUS = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 검색 (키워드 + 지역 필터, 페이징) -->
+    <select id="searchByKeyword" parameterType="map" resultMap="WithShoppingResultMap">
+        SELECT 
+            ws.WITHSHOPPING_ID,
+            ws.USER_ID,
+            ws.WITHSHOPPING_TITLE,
+            ws.WITHSHOPPING_STATUS,
+            ws.WITHSHOPPING_SI,
+            ws.WITHSHOPPING_GU,
+            ws.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_WITHSHOPPING ws
+        LEFT JOIN TB_USER u ON ws.USER_ID = u.USER_ID
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND ws.WITHSHOPPING_STATUS != 'DELETED'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    ws.WITHSHOPPING_TITLE LIKE '%' || #{keyword} || '%'
+                    OR ws.WITHSHOPPING_CONTENT LIKE '%' || #{keyword} || '%'
+                )
+            </if>
+            <if test="si != null and si != ''">
+                AND ws.WITHSHOPPING_SI = #{si}
+            </if>
+            <if test="gu != null and gu != ''">
+                AND ws.WITHSHOPPING_GU = #{gu}
+            </if>
+        </where>
+        ORDER BY ws.CREATED_AT DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 검색 결과 개수 -->
+    <select id="selectSearchCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_WITHSHOPPING
+        <where>
+            <!-- 삭제된 글 제외(소프트 삭제) -->
+            AND WITHSHOPPING_STATUS != 'DELETED'
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    WITHSHOPPING_TITLE LIKE '%' || #{keyword} || '%'
+                    OR WITHSHOPPING_CONTENT LIKE '%' || #{keyword} || '%'
+                )
+            </if>
+            <if test="si != null and si != ''">
+                AND WITHSHOPPING_SI = #{si}
+            </if>
+            <if test="gu != null and gu != ''">
+                AND WITHSHOPPING_GU = #{gu}
+            </if>
+        </where>
+    </select>
+
+    <!-- 상세 조회 -->
+    <select id="selectById" parameterType="int" resultMap="WithShoppingResultMap">
+        SELECT 
+            ws.WITHSHOPPING_ID,
+            ws.USER_ID,
+            ws.WITHSHOPPING_TITLE,
+            ws.WITHSHOPPING_CONTENT,
+            ws.WITHSHOPPING_STATUS,
+            ws.WITHSHOPPING_SI,
+            ws.WITHSHOPPING_GU,
+            ws.CREATED_AT,
+            u.USER_NICKNAME
+        FROM TB_WITHSHOPPING ws
+        LEFT JOIN TB_USER u ON ws.USER_ID = u.USER_ID
+        WHERE ws.WITHSHOPPING_ID = #{withShoppingId}
+          AND ws.WITHSHOPPING_STATUS != 'DELETED'
+    </select>
+
+    <!-- 작성 -->
+    <insert id="insertWithShopping" parameterType="com.moc.pro.withshopping.vo.WithShoppingVO" useGeneratedKeys="true" keyProperty="withShoppingId" keyColumn="WITHSHOPPING_ID">
+        INSERT INTO TB_WITHSHOPPING (
+            USER_ID,
+            WITHSHOPPING_TITLE,
+            WITHSHOPPING_CONTENT,
+            WITHSHOPPING_STATUS,
+            WITHSHOPPING_SI,
+            WITHSHOPPING_GU,
+            CREATED_AT,
+            CREATED_BY
+        ) VALUES (
+            #{userId},
+            #{withShoppingTitle},
+            #{withShoppingContent},
+            #{withShoppingStatus},
+            #{withShoppingSi},
+            #{withShoppingGu},
+            SYSTIMESTAMP,
+            #{userId}
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateWithShopping" parameterType="com.moc.pro.withshopping.vo.WithShoppingVO">
+        UPDATE TB_WITHSHOPPING SET
+            WITHSHOPPING_TITLE = #{withShoppingTitle},
+            WITHSHOPPING_CONTENT = #{withShoppingContent},
+            WITHSHOPPING_STATUS = #{withShoppingStatus},
+            WITHSHOPPING_SI = #{withShoppingSi},
+            WITHSHOPPING_GU = #{withShoppingGu},
+            UPDATED_AT = SYSTIMESTAMP,
+            UPDATED_BY = #{userId}
+        WHERE WITHSHOPPING_ID = #{withShoppingId}
+    </update>
+
+    <!-- 삭제 -->
+    <!-- 삭제: 소프트 삭제로 상태값만 변경 -->
+    <update id="deleteWithShopping" parameterType="int">
+        UPDATE TB_WITHSHOPPING SET
+            WITHSHOPPING_STATUS = 'DELETED',
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE WITHSHOPPING_ID = #{withShoppingId}
+    </update>
+
+    <!-- 작성자 확인 -->
+    <select id="checkAuthor" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_WITHSHOPPING
+        WHERE WITHSHOPPING_ID = #{withShoppingId}
+          AND USER_ID = #{userId}
+    </select>
+
+    <!-- 모집 완료 처리 -->
+    <update id="updateStatusComplete" parameterType="int">
+        UPDATE TB_WITHSHOPPING SET
+            WITHSHOPPING_STATUS = '모집완료',
+            UPDATED_AT = SYSTIMESTAMP
+        WHERE WITHSHOPPING_ID = #{withShoppingId}
+    </update>
+
+</mapper>

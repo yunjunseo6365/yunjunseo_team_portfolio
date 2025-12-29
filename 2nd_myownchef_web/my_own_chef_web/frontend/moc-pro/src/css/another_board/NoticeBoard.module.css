@@ -1,0 +1,125 @@
+.bodydiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 15px;
+}
+.titlediv{
+    width: 100%;
+    font-size: 180%;
+    color: white;
+    border-bottom: 1px #FAE7C3 solid;
+    padding: 15px 0px;
+}
+.cursor{
+    cursor: pointer;
+}
+.searchdiv{
+    margin-top: 15px;
+    background-color: #FAE7C3;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 130%;
+    border-radius: 10px;
+}
+.searchdiv form{
+    width: 90%;
+    display: flex;
+    gap: 30px;
+}
+.searchdiv input[type="text"]{
+    width: 80%;
+    padding: 0px 15px;
+    font-size: 110%;
+}
+.searchdiv button{
+    border: none;
+    color: white;
+    padding: 10px 50px;
+    font-size: 120%;
+    background-color: #C85C3C;
+    cursor: pointer;
+}
+.boarddiv{
+    background-color: #FAE7C3;
+    margin-top: 20px;
+    border-radius: 10px;
+    min-height: 630px;
+    padding: 20px 10px;
+    position: relative;
+}
+.board_container{
+    display: grid;
+    grid-template-columns: 2fr 10fr 5fr;
+    width: 100%;
+}
+.boarditems_title{
+    background-color: #DDDFE1;
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px #cccccc solid;
+    font-size: 120%;
+}
+
+.boarditems_title_none{
+    background-color: #DDDFE1;
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border: none;
+    font-size: 120%;
+}
+.boarditems{
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px #cccccc solid;
+    font-size: 120%;
+    border-bottom: 1px #cccccc solid;
+}
+.boarditems_none{
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    font-size: 120%;
+    border-bottom: 1px #cccccc solid;
+}
+.bottomdiv{
+    height: 50px;
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    width: 58%;
+    left: 40%;
+    justify-content: space-between;
+}
+.bottomdiv button{
+    border: none;
+    padding: 8px 40px;
+    font-size: 120%;
+    color: white;
+    background-color: #C85C3C;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden !important;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 / 회원가입 - VertScreen</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: var(--bg, #0b0f1a);
+      color: var(--text, #fff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .auth-card {
+      background: var(--panel, #151d2e);
+      padding: 40px 30px;
+      border-radius: var(--radius, 12px);
+      box-shadow: var(--shadow, 0 4px 12px rgba(0, 0, 0, .4));
+      width: 380px;
+      text-align: center;
+    }
+
+    .auth-card h1 {
+      margin-bottom: 25px;
+      font-size: 22px;
+    }
+
+    .auth-card .logo img {
+      max-width: 50%;
+    }
+
+    .auth-card input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid var(--line, #333);
+      border-radius: var(--radius, 8px);
+      background: #1a2235;
+      color: #fff;
+    }
+
+    .auth-card input::placeholder {
+      color: #999;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .input-row input {
+      flex: 1;
+      margin-top: 20px;
+    }
+
+    .auth-card button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border: none;
+      border-radius: var(--radius, 8px);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--accent, #00e5a8);
+      color: #000;
+    }
+
+    .btn {
+      background: #22314b;
+      color: #fff;
+    }
+
+    .btn.small {
+      padding: 10px;
+      font-size: 13px;
+      width: auto;
+    }
+
+    .toggle {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--muted, #9fb0d0);
+      cursor: pointer;
+    }
+
+    .back-arrow {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 20px;
+      text-decoration: none;
+      color: #1da1f2;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    .back-arrow:hover {
+      color: #0d8ddb;
+    }
+
+    /* 카드 안쪽 좌표 기준으로 배치되도록 relative 지정 */
+    .auth-card {
+      position: relative;
+      /* 추가 */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="auth-card">
+    <!-- 로고 이미지 -->
+    <div class="logo">
+      <img src="./VertScreen_logo.png" alt="VertScreen Logo" />
+    </div>
+    <h1 id="formTitle">로그인</h1>
+
+    <!-- 로그인 폼 -->
+    <div id="loginForm">
+      <a href="vertScreen_main.html" class="back-arrow">←</a>
+      <input type="text" id="loginId" placeholder="이메일 또는 아이디" />
+      <input type="password" id="loginPw" placeholder="비밀번호" />
+      <button class="btn primary" onclick="login()">로그인</button>
+      <div class="toggle" onclick="showSignup()">회원가입 하기</div>
+    </div>
+
+    <!-- 회원가입 폼 -->
+    <div id="signupForm" style="display: none">
+      <a href="vertScreen_main.html" class="back-arrow">←</a>
+      <div class="input-row">
+        <input type="email" id="signupEmail" placeholder="이메일" />
+        <button class="btn small" onclick="checkDuplicate()">중복확인</button>
+      </div>
+      <input type="password" id="signupPw" placeholder="비밀번호" />
+      <input type="password" id="signupPwConfirm" placeholder="비밀번호 재입력" />
+      <input type="text" id="signupPhone" placeholder="전화번호" />
+      <button class="btn primary" onclick="signup()">회원가입</button>
+      <div class="toggle" onclick="showLogin()">로그인으로 돌아가기</div>
+    </div>
+  </div>
+
+  <script>
+    // 이메일 중복확인 여부 저장 변수
+    let emailChecked = false;
+
+    // 로그인 → 회원가입 화면 전환
+    function showSignup() {
+      document.getElementById("loginForm").style.display = "none";   // 로그인 폼 숨기기
+      document.getElementById("signupForm").style.display = "block"; // 회원가입 폼 보이기
+      document.getElementById("formTitle").innerText = "회원가입";    // 제목 변경
+    }
+
+    // 회원가입 → 로그인 화면 전환
+    function showLogin() {
+      document.getElementById("signupForm").style.display = "none";  // 회원가입 폼 숨기기
+      document.getElementById("loginForm").style.display = "block";  // 로그인 폼 보이기
+      document.getElementById("formTitle").innerText = "로그인";      // 제목 변경
+    }
+
+    // 이메일 중복 확인
+    function checkDuplicate() {
+      const email = document.getElementById("signupEmail").value.trim();
+      if (!email) {
+        alert("이메일을 입력하세요");
+        return;
+      }
+      // localStorage 에 "user_이메일" 형태로 저장된 계정이 있는지 확인
+      const existing = localStorage.getItem("user_" + email);
+      if (existing) {
+        alert("이미 사용 중인 이메일입니다.");
+        emailChecked = false; // 사용 불가
+      } else {
+        alert("사용 가능한 이메일입니다.");
+        emailChecked = true;  // 사용 가능
+      }
+    }
+
+    // 회원가입 처리
+    function signup() {
+      const email = document.getElementById("signupEmail").value.trim();
+      const pw = document.getElementById("signupPw").value.trim();
+      const pwConfirm = document.getElementById("signupPwConfirm").value.trim();
+      const phone = document.getElementById("signupPhone").value.trim();
+
+      // 입력값 검증
+      if (!email || !pw || !pwConfirm || !phone) {
+        alert("모든 항목을 입력하세요");
+        return;
+      }
+      if (!emailChecked) {
+        alert("이메일 중복확인을 해주세요");
+        return;
+      }
+      if (pw !== pwConfirm) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+
+      // 사용자 객체 생성 후 localStorage 에 저장
+      const user = { email, pw, phone };
+      localStorage.setItem("user_" + email, JSON.stringify(user));
+
+      alert("회원가입 성공! 이제 로그인 해주세요.");
+      showLogin(); // 회원가입 후 로그인 화면으로 이동
+    }
+
+    // 로그인 처리
+    function login() {
+      const loginId = document.getElementById("loginId").value.trim();
+      const pw = document.getElementById("loginPw").value.trim();
+
+      // 입력값 검증
+      if (!loginId || !pw) {
+        alert("이메일 또는 아이디, 비밀번호를 입력하세요");
+        return;
+      }
+
+      // localStorage 에서 사용자 데이터 불러오기
+      const user = JSON.parse(localStorage.getItem("user_" + loginId));
+      if (user && user.pw === pw) {
+        // 로그인 성공 시 현재 사용자 저장
+        localStorage.setItem("currentUser", loginId);
+        alert(loginId + "님, 로그인 성공!");
+        window.location.href = "VertScreen_main.html"; // 메인 페이지로 이동
+      } else {
+        alert("아이디(이메일) 또는 비밀번호가 올바르지 않습니다.");
+      }
+    }
+
+    // 페이지 로드 시 URL 파라미터 확인
+    // ex) login.html?mode=signup → 회원가입 폼 자동 표시
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get('mode');
+
+      if (mode === 'signup') {
+        showSignup(); // 회원가입 폼 열기
+      }
+    };
+  </script>
+
+</body>
+
+</html>

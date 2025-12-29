@@ -1,0 +1,137 @@
+.conv_review_write{
+    width: 95%;
+    background-color: #FAE7C3;
+    min-height: 700px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.titlediv{
+    width: 100%;
+    border-bottom: 1px #cccccc solid;
+    padding: 15px 25px;
+    font-size: 150%;
+}
+.conv_write_container{
+    width: 100%;
+    margin-top: 20px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+.conv_write_container form{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+.select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.store_filter_group,
+.category_tab_group {
+  flex: 1;
+}
+.filter_dropdown,
+.category_dropdown {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #C87553;
+  border-radius: 999px;
+  background-color: #FEFBF5;
+  color: #3D3D3D;
+  text-align: center;
+}
+.conv_title{
+    font-size: 150%;
+}
+
+.input_title{
+    margin-top: 13px;
+    width: 100%;
+    font-size: 120%;
+    padding: 10px;
+    background-color: #FAE7C3;
+    border: 2px #C85C3C solid;
+    border-radius: 10px;
+}
+.input_price{
+    margin-top: 13px;
+    width: 100%;
+    font-size: 120%;
+    padding: 10px;
+    background-color: #FAE7C3;
+    border: 2px #C85C3C solid;
+    border-radius: 10px;
+}
+.input_content{
+    margin-top: 13px;
+    width: 100%;
+    font-size: 120%;
+    padding: 10px;
+    background-color: #FAE7C3;
+    border: 2px #C85C3C solid;
+    border-radius: 10px;
+    min-height: 300px;
+    resize: none;
+}
+.addbtn{
+    display: flex;
+    gap: 40px;
+    justify-content: right;    
+}
+.addbtn button[type="button"]{
+    border: none;
+    font-size: 80%;
+    padding: 10px 35px;
+    border-radius: 10px;
+    margin-top: 5px;
+    background-color: #C85C3C;
+    color: #FAE7C3;
+    cursor: pointer;
+}
+
+
+.formbtn{
+    display: flex;
+    gap: 40px;
+    justify-content: right;
+}
+.formbtn button[type="submit"]{
+    border: none;
+    font-size: 130%;
+    padding: 10px 35px;
+    border-radius: 10px;
+    background-color: #C85C3C;
+    color: white;
+    cursor: pointer;
+}
+.formbtn button[type="button"]{
+    border: 1px #C85C3C solid;
+    font-size: 130%;
+    padding: 10px 35px;
+    border-radius: 10px;
+    background-color: #FAE7C3;
+    color: black;
+    cursor: pointer;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 18px;
+    color: #666;
+    width: 100%;
+}

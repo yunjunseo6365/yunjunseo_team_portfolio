@@ -1,0 +1,43 @@
+/* 전체 헤더 바 */
+.header_container {
+    display: flex;
+    justify-content: space-between; /* ★★★ 핵심: left/right 그룹을 양쪽 끝으로 보냄 */
+    align-items: center;
+    height: 70px;
+    gap: 10px;
+    padding: 0 40px; /* margin 대신 padding을 사용해 안쪽 여백을 줌 */
+    background-color: #C85C3C; /* 배경색 추가 */
+}
+
+/* 왼쪽 메뉴 그룹 */
+.left_group {
+    display: flex;
+    align-items: center;
+    gap: 150px; /* '공지사항'과 '소개' 사이의 간격 */
+}
+
+/* 오른쪽 메뉴 그룹 (loginForm -> right_group) */
+.right_group {
+    display: flex;
+    align-items: center;
+    gap: 50px; /* '로그인'과 '회원가입' 사이의 간격 */
+}
+
+/* ★★★ 아이콘과 텍스트 갭 문제를 해결할 공통 클래스 */
+.nav_link {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 아이콘과 텍스트 사이의 간격 */
+    
+    color: #FAE7C3; /* 텍스트 색상 */
+    text-decoration: none; /* 링크 밑줄 제거 */
+    font-weight: bold;
+}
+.nav_link a{
+  color: white;
+}
+
+/* 아이콘 스타일 */
+.icons {
+    color: #FAE7C3; /* 아이콘 색상 */
+}

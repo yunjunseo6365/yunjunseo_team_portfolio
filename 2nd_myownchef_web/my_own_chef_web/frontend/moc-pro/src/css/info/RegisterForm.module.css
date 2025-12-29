@@ -1,0 +1,132 @@
+.register_div{
+    display: flex;
+    justify-content: center;
+    height: 100%; /* 화면 전체 높이 */
+}
+
+.register_form{
+  height: 670px;
+  background-color: #FAE7C3;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 100px;
+  margin-bottom: 100px;
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register_form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  border: 2px solid #d4a373;
+  border-radius: 6px;
+}
+
+.register {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 20px;
+  background-color: #d4a373;
+  color: white;
+  border: none;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+label{
+  display: flex;
+  flex-direction: column;
+}
+
+/* hover & active 효과 */
+.register:hover {
+  color: green;
+  background-color: lightgreen;
+}
+
+.register:active {
+  color: blue;
+}
+
+hr{
+    width: 100%;
+    border: 3px black solid; 
+}
+
+.input_group {
+  display: flex;
+  width: 100%;
+  gap: 10px; /* 간격 조절 */
+}
+.input_group > input {
+  width: 75%;
+}
+
+.input_group button{
+  width: 25%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  color: white;
+  background-color: #d4a373;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.modal{
+    position: fixed;
+    inset: 0; 
+    background-color: rgba(0, 0, 0, 0.75);
+    /* 내용물(베이지색 박스)을 중앙에 배치 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 다른 요소들보다 위에 보이도록 z-index를 높게 설정 */
+    z-index: 1000;
+}
+.modal_container{
+  width: 35vw;
+  height: 80vh;
+}
+/* 아이디 중복 버튼 hover & active 효과 */
+.input_group button:hover {
+  color: green;
+  background-color: lightgreen;
+}
+
+.input_group button:active {
+  color: blue;
+}
+
+.input_agree {
+  display: flex;
+  align-items: center;     /* 세로 가운데 정렬 */
+  justify-content: center; /* 가로 가운데 정렬 */
+  gap: 8px;                /* 체크박스와 텍스트 사이 간격 */
+  margin-top: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input_agree input {
+  width: 18px;
+  height: 18px;
+  accent-color: white;   /* 체크박스 색상 (선택사항) */
+}
+
+.input_agree p {
+  margin: 0;
+  font-size: 16px;
+  margin-bottom: 8px;
+}

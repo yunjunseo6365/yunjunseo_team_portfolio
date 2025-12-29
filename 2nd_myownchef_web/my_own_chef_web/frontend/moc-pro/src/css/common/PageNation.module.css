@@ -1,0 +1,45 @@
+.pagenationdiv_middle{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 120%;
+    user-select: none;
+}
+.leftpagenation_middle{
+    font-size: 200%;
+    padding: 5px;
+    background-color: #747474;
+    border-radius: 5px;
+    transform: rotate(-180deg);
+    cursor: pointer;
+}
+.rightpagenation_middle{
+    font-size: 200%;
+    padding: 5px;
+    background-color: #747474;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagenationdiv_small{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 80%;
+    user-select: none;
+}
+.leftpagenation_small{
+    font-size: 200%;
+    padding: 5px;
+    background-color: #747474;
+    border-radius: 5px;
+    transform: rotate(-180deg);
+    cursor: pointer;
+}
+.rightpagenation_small{
+    font-size: 200%;
+    padding: 5px;
+    background-color: #747474;
+    border-radius: 5px;
+    cursor: pointer;
+}
